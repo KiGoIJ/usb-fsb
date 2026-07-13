@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Форум УСБ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>Форум сотрудников УСБ УФСБ</span>
+        </div>
+        <div>
+            <span style="margin-right:20px; color:var(--text-dim);">Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong></span>
+            <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        </div>
+    </header>
+
+    <main style="padding: 30px 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h1 style="color:var(--accent);">📋 Темы форума</h1>
+            <a href="new_topic.html" class="btn"><i class="fa-solid fa-plus"></i> Новая тема</a>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table id="topicTable">
+                <thead>
+                    <tr>
+                        <th>Заголовок</th>
+                        <th>Автор</th>
+                        <th>Дата создания</th>
+                        <th>Ответов</th>
+                        <th>Последнее сообщение</th>
+                    </tr>
+                </thead>
+                <tbody id="topicList"></tbody>
+            </table>
+        </div>
+        <p id="emptyMsg" style="text-align:center; color:var(--text-dim); margin-top:30px; display:none;">Пока нет ни одной темы. Создайте первую!</p>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('userDisplay').textContent = localStorage.getItem('callsign') || 'Неизвестный';
+
+        function renderTopics() {
+            const topics = getTopics();
+            const tbody = document.getElementById('topicList');
+            const emptyMsg = document.getElementById('emptyMsg');
+            tbody.innerHTML = '';
+
+            if (topics.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+            emptyMsg.style.display = 'none';
+
+            // Сортируем по дате последнего сообщения (сначала новые)
+            topics.sort((a, b) => new Date(b.lastPostDate) - new Date(a.lastPostDate));
+
+            topics.forEach(t => {
+                const row = tbody.insertRow();
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', () => {
+                    window.location.href = `topic.html?id=${t.id}`;
+                });
+                row.innerHTML = `
+                    <td><strong>${escapeHtml(t.title)}</strong></td>
+                    <td>${escapeHtml(t.author)}</td>
+                    <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
+                    <td>${t.postCount}</td>
+                    <td>${new Date(t.lastPostDate).toLocaleString('ru-RU')}</td>
+                `;
+            });
+        }
+
+        // Простая защита от XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onload = renderTopics;
+    </script>
+</body>
+</html>
