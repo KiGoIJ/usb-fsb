@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Рапорты</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>Система рапортов</span>
+        </div>
+        <div>
+            <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
+            <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        </div>
+    </header>
+
+    <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h1 style="color:var(--accent);">📄 Реестр рапортов</h1>
+            <button class="btn" onclick="showReportForm()"><i class="fa-solid fa-plus"></i> Подать рапорт</button>
+        </div>
+
+        <!-- Форма подачи рапорта (скрыта по умолчанию) -->
+        <div id="reportFormContainer" style="display:none;" class="card" style="margin-bottom:20px;">
+            <h3 style="color:var(--accent);">Новый рапорт</h3>
+            <form id="reportForm">
+                <label>Тема рапорта:</label>
+                <input type="text" id="reportSubject" required>
+                <label>Текст рапорта:</label>
+                <textarea id="reportText" rows="4" required></textarea>
+                <button type="submit"><i class="fa-solid fa-paper-plane"></i> Отправить</button>
+                <button type="button" onclick="hideReportForm()" class="danger" style="margin-left:10px;">Отмена</button>
+            </form>
+        </div>
+
+        <!-- Фильтры по статусам -->
+        <div style="margin-bottom:20px;">
+            <button class="btn" onclick="filterReports('all')">Все</button>
+            <button class="btn" onclick="filterReports('на рассмотрении')">На рассмотрении</button>
+            <button class="btn" onclick="filterReports('одобрен')">Одобрены</button>
+            <button class="btn" onclick="filterReports('отклонён')">Отклонены</button>
+        </div>
+
+        <!-- Список рапортов -->
+        <div id="reportsList"></div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        let currentFilter = 'all';
+
+        function showReportForm() {
+            document.getElementById('reportFormContainer').style.display = 'block';
+        }
+        function hideReportForm() {
+            document.getElementById('reportFormContainer').style.display = 'none';
+            document.getElementById('reportForm').reset();
+        }
+
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const subject = document.getElementById('reportSubject').value.trim();
+            const text = document.getElementById('reportText').value.trim();
+            const author = localStorage.getItem('callsign') || 'Аноним';
+            if (!subject || !text) return;
+
+            const report = {
+                id: 'Р-' + Date.now(),
+                subject: subject,
+                text: text,
+                author: author,
+                date: new Date().toISOString(),
+                status: 'на рассмотрении'
+            };
+            saveReport(report);
+            hideReportForm();
+            renderReports(currentFilter);
+        });
+
+        function renderReports(filter) {
+            const reports = getReports();
+            const container = document.getElementById('reportsList');
+            container.innerHTML = '';
+
+            let filtered = reports;
+            if (filter !== 'all') {
+                filtered = reports.filter(r => r.status === filter);
+            }
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-dim); text-align:center;">Нет рапортов</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Тема</th>
+                        <th>Автор</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+            const tbody = table.querySelector('tbody');
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            filtered.forEach((r, index) => {
+                const row = tbody.insertRow();
+                const statusClass = r.status === 'одобрен' ? 'completed' : (r.status === 'отклонён' ? 'registered' : 'in-progress');
+                row.innerHTML = `
+                    <td><strong>${r.id}</strong></td>
+                    <td>${escapeHtml(r.subject)}</td>
+                    <td>${escapeHtml(r.author)}</td>
+                    <td>${new Date(r.date).toLocaleString('ru-RU')}</td>
+                    <td><span class="status-badge ${statusClass}">${r.status}</span></td>
+                    <td>
+                        <button class="btn small" onclick="changeReportStatus('${r.id}', 'на рассмотрении')">На рассмотрении</button>
+                        <button class="btn small" onclick="changeReportStatus('${r.id}', 'одобрен')">Одобрить</button>
+                        <button class="btn danger small" onclick="changeReportStatus('${r.id}', 'отклонён')">Отклонить</button>
+                    </td>
+                `;
+            });
+            container.appendChild(table);
+        }
+
+        function changeReportStatus(id, newStatus) {
+            const reports = getReports();
+            const report = reports.find(r => r.id === id);
+            if (report) {
+                report.status = newStatus;
+                saveReports(reports);
+                renderReports(currentFilter);
+            }
+        }
+
+        function filterReports(filter) {
+            currentFilter = filter;
+            renderReports(filter);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onload = function() {
+            renderReports('all');
+        };
+    </script>
+</body>
+</html>
