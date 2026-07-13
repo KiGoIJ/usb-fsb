@@ -23,8 +23,19 @@
         </div>
         <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выход</a>
     </header>
+
+    <!-- Новый официальный блок -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="assets/emblem.png" alt="Герб" class="hero-emblem" onerror="this.style.display='none'">
+            <h1 class="hero-title">ФЕДЕРАЛЬНАЯ СЛУЖБА БЕЗОПАСНОСТИ</h1>
+            <p class="hero-subtitle">Управление собственной безопасности</p>
+            <p class="hero-motto">«Щит и меч закона»</p>
+        </div>
+    </section>
+
     <main class="dashboard">
-        <h1>РАБОЧИЙ СТОЛ ОПЕРАТИВНИКА</h1>
+        <h2>РАБОЧИЙ СТОЛ ОПЕРАТИВНИКА</h2>
         <div class="menu-grid">
             <a href="report.html" class="menu-card">
                 <i class="fa-solid fa-file-circle-exclamation"></i>
@@ -49,6 +60,7 @@
         </div>
         <div class="current-time" id="timeDisplay"></div>
     </main>
+
     <script>
         document.getElementById('userDisplay').textContent = localStorage.getItem('callsign') || 'Неизвестный';
         function logout() {
