@@ -2,29 +2,26 @@
    ПЕРЕМЕННЫЕ – новая палитра
    ====================================================== */
 :root {
-    --bg-primary: #3D4D55;       /* основной фон */
-    --bg-secondary: #2f3d44;     /* чуть темнее для фона элементов */
-    --bg-card: #D3C3B9;          /* светлый бежевый для карточек */
-    --bg-card-hover: #e0d2c8;    /* чуть светлее при ховере */
-    --accent: #B58863;           /* тёплый акцент */
-    --accent-dark: #9e7452;      /* более тёмный оттенок для кнопок */
-    --accent-glow: #B5886344;    /* для теней */
-    --text-primary: #2c3a42;     /* тёмный текст на светлом фоне карточек */
-    --text-secondary: #4a5a62;   /* для второстепенного текста на светлом */
-    --text-dim: #A79E9C;         /* для подписей и меток (на тёмном фоне) */
-    --text-on-dark: #e8e2dc;     /* светлый текст для тёмного фона */
-    --border: rgba(255,255,255,0.08);
-    --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-    --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.15);
+    --bg-primary: #021024;       /* основной фон */
+    --bg-secondary: #052659;     /* вторичный фон (шапка, футер, элементы) */
+    --bg-card: rgba(5, 38, 89, 0.6); /* карточки с прозрачностью */
+    --bg-card-hover: rgba(5, 38, 89, 0.8);
+    --accent: #548383;           /* основной акцент (бирюзовый) */
+    --accent-dark: #3f6a6a;      /* тёмный оттенок для кнопок */
+    --accent-light: #7DA0CA;     /* светлый голубой для ссылок, иконок */
+    --accent-glow: #54838344;
+    --text-primary: #C1E8FF;     /* светлый голубой для основного текста */
+    --text-secondary: #A0C4E0;   /* чуть темнее для второстепенного текста */
+    --text-dim: #7DA0CA;         /* для подписей и меток */
+    --border: rgba(125, 160, 202, 0.15);
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.3);
     --radius: 16px;
     --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --font-main: 'Inter', 'Montserrat', sans-serif;
     --font-mono: 'Fira Code', monospace;
 }
 
-/* ======================================================
-   ГЛОБАЛЬНЫЕ СТИЛИ
-   ====================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -33,7 +30,7 @@
 
 body {
     background: var(--bg-primary);
-    color: var(--text-on-dark);
+    color: var(--text-primary);
     font-family: var(--font-main);
     font-weight: 400;
     line-height: 1.6;
@@ -49,9 +46,8 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        radial-gradient(circle at 10% 20%, rgba(181, 136, 99, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, rgba(181, 136, 99, 0.05) 0%, transparent 50%);
+    background: radial-gradient(circle at 10% 20%, rgba(84, 131, 131, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(125, 160, 202, 0.04) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
 }
@@ -60,15 +56,15 @@ body::before {
    ШАПКА
    ====================================================== */
 header {
-    background: rgba(61, 77, 85, 0.85);
+    background: rgba(5, 38, 89, 0.85);
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     padding: 14px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -81,21 +77,19 @@ header .header-brand {
 }
 header .emblem-small {
     height: 44px;
-    filter: drop-shadow(0 0 8px rgba(181, 136, 99, 0.3));
+    filter: drop-shadow(0 0 8px rgba(125, 160, 202, 0.3));
 }
 header span {
     font-weight: 500;
-    color: var(--text-on-dark);
-    opacity: 0.9;
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }
 header strong {
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 600;
 }
 header a {
-    color: var(--text-on-dark);
-    opacity: 0.75;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.9rem;
@@ -104,8 +98,8 @@ header a {
     transition: var(--transition);
 }
 header a:hover {
-    opacity: 1;
-    background: rgba(255,255,255,0.06);
+    color: #fff;
+    background: rgba(125, 160, 202, 0.15);
 }
 
 /* ======================================================
@@ -126,15 +120,12 @@ button, .btn {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 4px 16px rgba(181, 136, 99, 0.25);
+    box-shadow: 0 4px 16px rgba(84, 131, 131, 0.25);
 }
 button:hover, .btn:hover {
     background: var(--accent-dark);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(181, 136, 99, 0.35);
-}
-button:active, .btn:active {
-    transform: translateY(0);
+    box-shadow: 0 8px 24px rgba(84, 131, 131, 0.35);
 }
 button.danger, .btn.danger {
     background: #c0395a;
@@ -150,21 +141,24 @@ button.small, .btn.small {
 }
 
 /* ======================================================
-   КАРТОЧКИ (светлые)
+   КАРТОЧКИ
    ====================================================== */
 .card {
     background: var(--bg-card);
-    color: var(--text-primary);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 28px 32px;
     box-shadow: var(--shadow-soft);
     transition: var(--transition);
-    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text-primary);
 }
 .card:hover {
-    background: var(--bg-card-hover);
+    border-color: rgba(125, 160, 202, 0.3);
     box-shadow: var(--shadow);
-    transform: translateY(-4px);
+    background: var(--bg-card-hover);
+    transform: translateY(-3px);
 }
 .card h2, .card h3 {
     color: var(--text-primary);
@@ -177,8 +171,8 @@ button.small, .btn.small {
    ФОРМЫ
    ====================================================== */
 input, textarea, select {
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
     border-radius: 10px;
     color: var(--text-primary);
     padding: 12px 16px;
@@ -191,47 +185,47 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
     border-color: var(--accent);
     outline: none;
-    box-shadow: 0 0 0 4px rgba(181, 136, 99, 0.2);
-    background: #fff;
+    box-shadow: 0 0 0 4px rgba(84, 131, 131, 0.2);
+    background: rgba(255, 255, 255, 0.12);
 }
 label {
     font-weight: 500;
-    color: var(--text-on-dark);
-    opacity: 0.8;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     display: block;
     margin-top: 8px;
 }
 
 /* ======================================================
-   ТАБЛИЦЫ
+   ТАБЛИЦЫ (общие)
    ====================================================== */
 table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 6px;
     margin-top: 16px;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    color: var(--text-primary);
 }
 th {
-    background: rgba(255,255,255,0.1);
+    background: rgba(125, 160, 202, 0.12);
     padding: 14px 18px;
     text-align: left;
     font-weight: 600;
-    color: var(--accent);
-    border-bottom: 2px solid rgba(255,255,255,0.1);
+    color: var(--accent-light);
+    border-bottom: 2px solid var(--border);
     border-radius: 10px 10px 0 0;
 }
 td {
     padding: 14px 18px;
-    background: rgba(255,255,255,0.04);
+    background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid transparent;
     vertical-align: middle;
-    color: var(--text-on-dark);
+    color: var(--text-secondary);
 }
 tr:hover td {
-    background: rgba(255,255,255,0.08);
+    background: rgba(125, 160, 202, 0.06);
 }
 tr:last-child td {
     border-bottom: none;
@@ -249,18 +243,21 @@ tr:last-child td {
 }
 .login-box {
     background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 48px 40px 40px;
     text-align: center;
     border-radius: var(--radius);
     width: 420px;
     max-width: 92%;
+    border: 1px solid var(--border);
     box-shadow: var(--shadow);
     color: var(--text-primary);
 }
 .login-box img.emblem {
     width: 100px;
     margin-bottom: 16px;
-    filter: drop-shadow(0 0 20px rgba(181, 136, 99, 0.2));
+    filter: drop-shadow(0 0 20px rgba(125, 160, 202, 0.2));
 }
 .login-box h2 {
     font-weight: 600;
@@ -269,15 +266,19 @@ tr:last-child td {
     margin-bottom: 24px;
 }
 .login-box input {
-    background: #fff;
-    border: 1px solid #d0c0b5;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+.login-box input:focus {
+    background: rgba(255, 255, 255, 0.15);
 }
 .login-box button {
     width: 100%;
     margin-top: 8px;
 }
 .login-box a {
-    color: var(--accent-dark);
+    color: var(--accent-light);
 }
 
 /* ======================================================
@@ -292,7 +293,7 @@ tr:last-child td {
     font-weight: 700;
     font-size: 2.2rem;
     margin-bottom: 32px;
-    color: #fff;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
 }
 
@@ -305,9 +306,12 @@ tr:last-child td {
 }
 .stat-card {
     background: var(--bg-card);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-radius: var(--radius);
     padding: 24px 20px;
     text-align: center;
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-soft);
     color: var(--text-primary);
     transition: var(--transition);
@@ -315,10 +319,11 @@ tr:last-child td {
 .stat-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow);
+    border-color: rgba(125, 160, 202, 0.3);
 }
 .stat-card i {
     font-size: 2.4rem;
-    color: var(--accent);
+    color: var(--accent-light);
     margin-bottom: 8px;
 }
 .stat-card h3 {
@@ -346,7 +351,7 @@ tr:last-child td {
 }
 .summary-card li {
     padding: 8px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     color: var(--text-secondary);
 }
 
@@ -358,11 +363,14 @@ tr:last-child td {
 }
 .nav-card {
     background: var(--bg-card);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-radius: var(--radius);
     padding: 28px 20px;
     text-decoration: none;
     text-align: center;
     color: var(--text-primary);
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-soft);
     transition: var(--transition);
     display: flex;
@@ -373,11 +381,12 @@ tr:last-child td {
 .nav-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow);
+    border-color: rgba(125, 160, 202, 0.3);
     background: var(--bg-card-hover);
 }
 .nav-card i {
     font-size: 2.6rem;
-    color: var(--accent);
+    color: var(--accent-light);
 }
 .nav-card span {
     font-weight: 500;
@@ -392,12 +401,12 @@ tr:last-child td {
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
-    background: rgba(255,255,255,0.1);
-    color: var(--text-on-dark);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
 }
 .status-badge.registered {
-    background: rgba(181, 136, 99, 0.25);
-    color: var(--accent);
+    background: rgba(84, 131, 131, 0.2);
+    color: var(--accent-light);
 }
 .status-badge.in-progress {
     background: rgba(247, 183, 115, 0.2);
@@ -415,7 +424,7 @@ tr:last-child td {
     margin-bottom: 36px;
 }
 .forum-category h2 {
-    color: var(--accent);
+    color: var(--accent-light);
     border-bottom: 2px solid rgba(255,255,255,0.06);
     padding-bottom: 10px;
     margin-bottom: 18px;
@@ -423,13 +432,13 @@ tr:last-child td {
     font-size: 1.4rem;
 }
 .forum-category .empty {
-    color: var(--text-on-dark);
+    color: var(--text-secondary);
     opacity: 0.6;
     font-style: italic;
 }
 
 /* ======================================================
-   КОНСОЛЬ
+   КОНСОЛЬ (специфичные стили для таблиц и вкладок)
    ====================================================== */
 .console-tabs {
     display: flex;
@@ -438,16 +447,45 @@ tr:last-child td {
     flex-wrap: wrap;
 }
 .console-tabs .btn {
-    background: rgba(255,255,255,0.06);
-    color: var(--text-on-dark);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
     box-shadow: none;
+    border: 1px solid transparent;
 }
 .console-tabs .btn:hover {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.1);
 }
 .console-tabs .btn.active {
     background: var(--accent);
     color: #fff;
+    border-color: var(--accent);
+}
+
+/* Улучшенная читаемость таблиц в консоли */
+#usersList table,
+#topicsList table,
+#reportsList table {
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+#usersList th,
+#topicsList th,
+#reportsList th {
+    font-weight: 600;
+    color: var(--accent-light);
+    background: rgba(125, 160, 202, 0.1);
+}
+#usersList td,
+#topicsList td,
+#reportsList td {
+    color: var(--text-secondary);
+    padding: 12px 16px;
+}
+#usersList tr:hover td,
+#topicsList tr:hover td,
+#reportsList tr:hover td {
+    background: rgba(125, 160, 202, 0.06);
 }
 
 /* ======================================================
@@ -488,45 +526,28 @@ tr:last-child td {
     }
     th, td {
         padding: 10px 12px;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
+    }
+    #usersList table,
+    #topicsList table,
+    #reportsList table {
+        font-size: 0.85rem;
     }
 }
 
-/* Улучшение читаемости таблиц в консоли */
-#usersList table,
-#topicsList table,
-#reportsList table {
-    font-family: 'Inter', 'Montserrat', sans-serif; /* заменяем моноширинный на обычный */
-    font-size: 0.95rem;  /* чуть крупнее */
-    line-height: 1.5;
+/* ======================================================
+   ДОПОЛНИТЕЛЬНО: скроллбар
+   ====================================================== */
+::-webkit-scrollbar {
+    width: 8px;
 }
-
-#usersList th,
-#topicsList th,
-#reportsList th {
-    font-weight: 600;
-    color: #3D4D55; /* тёмный цвет для заголовков */
-    background: rgba(61, 77, 85, 0.08);
-    padding: 12px 16px;
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
 }
-
-#usersList td,
-#topicsList td,
-#reportsList td {
-    padding: 12px 16px;
-    color: #2c3a42; /* насыщенный тёмный текст */
-    background: transparent;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+::-webkit-scrollbar-thumb {
+    background: var(--accent-dark);
+    border-radius: 10px;
 }
-
-#usersList tr:hover td,
-#topicsList tr:hover td,
-#reportsList tr:hover td {
-    background: rgba(181, 136, 99, 0.08); /* лёгкий акцент при наведении */
-}
-
-/* Делаем кнопки в консоли чуть крупнее */
-.console-tabs .btn {
-    font-size: 0.95rem;
-    padding: 10px 24px;
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
 }
