@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>УСБ – Вход</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <div class="login-box">
+        <img src="assets/emblem.png" alt="Эмблема" class="emblem">
+        <h2>АВТОМАТИЗИРОВАННАЯ СИСТЕМА<br>УСБ УФСБ «ЩИТ-М»</h2>
+        <input type="text" id="callsign" placeholder="Позывной">
+        <input type="password" id="code" placeholder="Код доступа">
+        <button onclick="login()">ВОЙТИ</button>
+        <p id="error" style="color:red;"></p>
+    </div>
+    <script>
+        function login() {
+            const callsign = document.getElementById('callsign').value.trim();
+            const code = document.getElementById('code').value.trim();
+            // Для RP задаём пару логин/пароль: любой позывной и код "Щит-2024"
+            if (callsign && code === 'Щит-2024') {
+                localStorage.setItem('auth', 'true');
+                localStorage.setItem('callsign', callsign);
+                window.location.href = 'index.html';
+            } else {
+                document.getElementById('error').textContent = 'Неверный код доступа';
+            }
+        }
+    </script>
+</body>
+</html>
