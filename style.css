@@ -1,34 +1,49 @@
-/* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ ===== */
+/* ======================================================
+   ПЕРЕМЕННЫЕ – мягкая тёмная тема с акцентами
+   ====================================================== */
 :root {
-    --bg-primary: #0a0c10;
-    --bg-secondary: #11161f;
-    --bg-card: #1a1f2b;
-    --accent: #00b4d8;
-    --accent-dark: #0077b6;
-    --text-primary: #e0e1dd;
-    --text-dim: #8d99ae;
-    --border: #2b3544;
-    --danger: #ff4d6d;
-    --success: #48cae4;
-    --font-main: 'Montserrat', sans-serif;
-    --font-mono: 'Fira Code', monospace;
+    --bg-primary: #0b0c10;
+    --bg-secondary: #14161f;
+    --bg-card: rgba(22, 26, 40, 0.75);
+    --bg-card-hover: rgba(32, 38, 58, 0.85);
+    --accent: #6b9eff;        /* мягкий голубой */
+    --accent-glow: #6b9eff44;
+    --accent-dark: #4a7fd4;
+    --accent-warm: #f7b773;   /* тёплый золотой для акцентов */
+    --text-primary: #eaeef5;
+    --text-secondary: #b8c4d9;
+    --text-dim: #7a8aa0;
+    --border: rgba(255, 255, 255, 0.06);
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --radius: 16px;
+    --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --font-main: 'Inter', 'Montserrat', sans-serif;
+    --font-mono: 'Fira Code', 'JetBrains Mono', monospace;
 }
 
+/* ======================================================
+   ГЛОБАЛЬНЫЕ СТИЛИ
+   ====================================================== */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background: linear-gradient(145deg, var(--bg-primary) 0%, #0d1117 100%);
+    background: radial-gradient(ellipse at 20% 20%, #1a1f2e, var(--bg-primary) 70%);
     color: var(--text-primary);
     font-family: var(--font-main);
+    font-weight: 400;
+    line-height: 1.6;
     min-height: 100vh;
-    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
 }
 
+/* Фоновый узор (лёгкий) */
 body::before {
     content: "";
     position: fixed;
@@ -36,249 +51,442 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path d="M10 10 L90 10 L90 90 L10 90 Z" fill="none" stroke="white"/><circle cx="20" cy="20" r="2" fill="white"/><circle cx="80" cy="50" r="1.5" fill="white"/><circle cx="40" cy="80" r="1" fill="white"/></svg>') repeat;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(107, 158, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(247, 183, 115, 0.02) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     pointer-events: none;
+    z-index: 0;
 }
 
+/* ======================================================
+   ШАПКА (стеклянная, с размытием)
+   ====================================================== */
 header {
-    background: rgba(10, 12, 16, 0.95);
-    backdrop-filter: blur(12px);
-    padding: 12px 30px;
+    background: rgba(11, 12, 16, 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    padding: 14px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--border);
-    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
+    transition: var(--transition);
+}
+
+header .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+header .emblem-small {
+    height: 44px;
+    filter: drop-shadow(0 0 8px rgba(107, 158, 255, 0.3));
+    transition: var(--transition);
+}
+header .emblem-small:hover {
+    filter: drop-shadow(0 0 16px rgba(107, 158, 255, 0.5));
+    transform: scale(1.05);
+}
+
+header span {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
     font-size: 0.95rem;
-    letter-spacing: 0.5px;
+}
+header strong {
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 header a {
-    color: var(--accent);
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: var(--transition);
+    letter-spacing: 0.01em;
 }
 header a:hover {
     color: #fff;
+    background: rgba(107, 158, 255, 0.1);
 }
 
-.header-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+header div > a {
+    margin-left: 8px;
+}
+header div > a:first-of-type {
+    margin-left: 0;
 }
 
-.emblem-small {
-    height: 40px;
-    width: auto;
-    filter: drop-shadow(0 0 6px rgba(0,180,216,0.4));
-}
-
+/* ======================================================
+   КНОПКИ
+   ====================================================== */
 button, .btn {
-    background: var(--accent-dark);
+    background: linear-gradient(135deg, var(--accent-dark), var(--accent));
     color: #fff;
     border: none;
-    padding: 10px 24px;
-    border-radius: 4px;
+    padding: 12px 28px;
+    border-radius: 12px;
     font-family: var(--font-main);
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    border: 1px solid transparent;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(107, 158, 255, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
-button:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 0 0 15px rgba(0,180,216,0.3);
+button::after, .btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    opacity: 0;
+    transition: var(--transition);
+}
+button:hover::after, .btn:hover::after {
+    opacity: 1;
 }
 
-button.danger {
-    background: var(--danger);
+button:hover, .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(107, 158, 255, 0.35);
+    background: linear-gradient(135deg, #5a8fe0, var(--accent));
 }
-button.danger:hover {
-    background: #ff1e44;
-    border-color: #ff1e44;
-    box-shadow: 0 0 15px rgba(255,77,109,0.3);
+button:active, .btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(107, 158, 255, 0.2);
 }
 
+button.danger, .btn.danger {
+    background: linear-gradient(135deg, #ff5a6e, #e03a4e);
+    box-shadow: 0 4px 20px rgba(255, 90, 110, 0.2);
+}
+button.danger:hover, .btn.danger:hover {
+    background: linear-gradient(135deg, #ff6a7e, #f04a5e);
+    box-shadow: 0 8px 30px rgba(255, 90, 110, 0.35);
+}
+
+button.small, .btn.small {
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    border-radius: 8px;
+}
+
+/* ======================================================
+   КАРТОЧКИ (стеклянные)
+   ====================================================== */
 .card {
     background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    transition: transform 0.2s, border-color 0.2s;
-}
-.card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
 }
 
+.card:hover {
+    border-color: rgba(107, 158, 255, 0.2);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+    background: var(--bg-card-hover);
+    transform: translateY(-3px);
+}
+
+/* ======================================================
+   ФОРМЫ
+   ====================================================== */
 input, textarea, select {
-    background: var(--bg-secondary);
+    background: rgba(20, 22, 31, 0.7);
+    backdrop-filter: blur(4px);
     border: 1px solid var(--border);
+    border-radius: 10px;
     color: var(--text-primary);
-    padding: 10px 14px;
-    border-radius: 4px;
+    padding: 12px 16px;
     font-family: var(--font-main);
     font-size: 0.95rem;
     width: 100%;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    margin: 8px 0 16px;
+    transition: var(--transition);
+    margin: 6px 0 16px;
 }
 input:focus, textarea:focus, select:focus {
     border-color: var(--accent);
     outline: none;
-    box-shadow: 0 0 10px rgba(0,180,216,0.2);
+    box-shadow: 0 0 0 4px rgba(107, 158, 255, 0.15);
+    background: rgba(20, 22, 31, 0.9);
+}
+input::placeholder, textarea::placeholder {
+    color: var(--text-dim);
 }
 
 label {
     font-weight: 500;
-    color: var(--text-dim);
+    color: var(--text-secondary);
     font-size: 0.85rem;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.03em;
     display: block;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
+/* ======================================================
+   ТАБЛИЦЫ
+   ====================================================== */
 table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+    margin-top: 16px;
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
+
 th {
-    background: var(--bg-card);
-    padding: 12px 16px;
+    background: rgba(32, 38, 58, 0.4);
+    backdrop-filter: blur(4px);
+    padding: 14px 18px;
     text-align: left;
     font-weight: 600;
     color: var(--accent);
     border-bottom: 2px solid var(--border);
-    letter-spacing: 0.5px;
-}
-td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-}
-tr:hover td {
-    background: rgba(255,255,255,0.02);
+    letter-spacing: 0.02em;
+    border-radius: 10px 10px 0 0;
 }
 
+td {
+    padding: 14px 18px;
+    background: rgba(22, 26, 40, 0.3);
+    border-bottom: 1px solid transparent;
+    vertical-align: middle;
+    transition: var(--transition);
+}
+
+tr:hover td {
+    background: rgba(107, 158, 255, 0.05);
+    border-color: var(--accent);
+}
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* ======================================================
+   АВТОРИЗАЦИЯ
+   ====================================================== */
 .login-page {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: radial-gradient(ellipse at center, #11161f 0%, #0a0c10 70%);
+    background: radial-gradient(ellipse at center, #1a1f2e 0%, var(--bg-primary) 70%);
 }
+
 .login-box {
     background: var(--bg-card);
-    padding: 40px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 48px 40px 40px;
     text-align: center;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    width: 400px;
-    max-width: 90%;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-    backdrop-filter: blur(5px);
+    border-radius: var(--radius);
+    width: 420px;
+    max-width: 92%;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+.login-box:hover {
+    border-color: rgba(107, 158, 255, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 .login-box img.emblem {
     width: 100px;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 12px rgba(0,180,216,0.5));
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 20px rgba(107, 158, 255, 0.3));
 }
 .login-box h2 {
     font-weight: 600;
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
     margin-bottom: 24px;
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
+}
+.login-box input {
+    margin: 4px 0 8px;
+}
+.login-box button {
+    width: 100%;
+    margin-top: 8px;
 }
 
+/* ======================================================
+   ГЛАВНАЯ (ДЭШБОРД)
+   ====================================================== */
 .dashboard {
     padding: 40px 20px;
     text-align: center;
 }
 .dashboard h1 {
-    font-weight: 600;
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-    letter-spacing: 1px;
-    color: var(--accent);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 32px;
+    letter-spacing: 0.04em;
+    background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
+
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
     max-width: 900px;
     margin: 0 auto;
 }
+
 .menu-card {
     background: var(--bg-card);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--border);
-    padding: 28px 16px;
+    padding: 32px 20px;
     text-decoration: none;
     color: var(--text-primary);
-    border-radius: 6px;
+    border-radius: var(--radius);
     font-weight: 500;
-    transition: all 0.2s;
+    transition: var(--transition);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     font-size: 1.1rem;
+    box-shadow: var(--shadow-soft);
 }
+
 .menu-card:hover {
-    background: var(--accent-dark);
+    background: var(--bg-card-hover);
     border-color: var(--accent);
-    color: #fff;
-    transform: scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,180,216,0.2);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(107, 158, 255, 0.15);
 }
 .menu-card i {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
+    color: var(--accent);
+    transition: var(--transition);
+}
+.menu-card:hover i {
+    transform: scale(1.1);
 }
 
+/* ======================================================
+   БЭЙДЖИ СТАТУСОВ
+   ====================================================== */
 .status-badge {
     display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.75rem;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.7rem;
     font-weight: 600;
+    letter-spacing: 0.02em;
     background: var(--border);
-    color: #fff;
+    color: var(--text-secondary);
 }
-.status-badge.registered { background: #2a4b5c; color: #90e0ef; }
-.status-badge.in-progress { background: #5c4a2a; color: #ffb703; }
-.status-badge.completed { background: #2a5c2a; color: #80ed99; }
+.status-badge.registered {
+    background: rgba(74, 127, 212, 0.2);
+    color: #7aafff;
+}
+.status-badge.in-progress {
+    background: rgba(247, 183, 115, 0.2);
+    color: #f7b773;
+}
+.status-badge.completed {
+    background: rgba(80, 200, 120, 0.2);
+    color: #6fcf97;
+}
 
+/* ======================================================
+   АДАПТИВ
+   ====================================================== */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
+        gap: 12px;
+        align-items: stretch;
+        padding: 14px 20px;
+    }
+    header .header-brand {
+        justify-content: center;
+    }
+    header div {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
     }
     .menu-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+    .login-box {
+        padding: 32px 24px;
+        width: 95%;
     }
 }
 
-/* Дополнительные стили для кнопок фильтров */
-.btn.small {
-    padding: 5px 12px;
-    font-size: 0.75rem;
+@media (max-width: 480px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+    .card {
+        padding: 20px;
+    }
+    th, td {
+        padding: 10px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ======================================================
+   ДОПОЛНИТЕЛЬНО: ПЛАВНЫЙ СКРОЛЛБАР
+   ====================================================== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--accent-dark);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* ======================================================
+   ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ
+   ====================================================== */
+.text-gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
