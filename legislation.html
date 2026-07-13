@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Законодательство</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>Собрание законодательства</span>
+        </div>
+        <div>
+            <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
+            <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        </div>
+    </header>
+
+    <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
+        <h1 style="color:var(--accent);">⚖️ Поиск по законодательству</h1>
+
+        <div style="display:flex; flex-wrap:wrap; gap:15px; margin:20px 0;">
+            <input type="text" id="searchInput" placeholder="Введите номер или ключевое слово..." style="flex:1; min-width:200px;">
+            <select id="codeFilter">
+                <option value="all">Все кодексы</option>
+                <option value="УК РФ">УК РФ</option>
+                <option value="КоАП РФ">КоАП РФ</option>
+                <option value="УПК РФ">УПК РФ</option>
+            </select>
+            <button class="btn" onclick="searchLegislation()"><i class="fa-solid fa-search"></i> Найти</button>
+        </div>
+
+        <div id="results" style="margin-top:20px;"></div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        function searchLegislation() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const codeFilter = document.getElementById('codeFilter').value;
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            const articles = getLegislationArticles();
+            let filtered = articles;
+
+            if (codeFilter !== 'all') {
+                filtered = filtered.filter(a => a.code === codeFilter);
+            }
+            if (query) {
+                filtered = filtered.filter(a =>
+                    a.number.toLowerCase().includes(query) ||
+                    a.title.toLowerCase().includes(query) ||
+                    a.text.toLowerCase().includes(query)
+                );
+            }
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = '<p style="color:var(--text-dim);">Ничего не найдено</p>';
+                return;
+            }
+
+            filtered.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.style.marginBottom = '15px';
+                div.innerHTML = `
+                    <h3 style="color:var(--accent);">${a.code} ${a.number} — ${a.title}</h3>
+                    <p style="margin:10px 0;">${a.text}</p>
+                    <p><strong>Санкция:</strong> ${a.sanction}</p>
+                `;
+                resultsContainer.appendChild(div);
+            });
+        }
+
+        // Пример заполнения базы данных (можно добавить больше статей)
+        function getLegislationArticles() {
+            return [
+                {
+                    code: 'УК РФ',
+                    number: 'ст. 105',
+                    title: 'Убийство',
+                    text: 'Умышленное причинение смерти другому человеку.',
+                    sanction: 'Лишение свободы на срок от 6 до 15 лет.'
+                },
+                {
+                    code: 'УК РФ',
+                    number: 'ст. 158',
+                    title: 'Кража',
+                    text: 'Тайное хищение чужого имущества.',
+                    sanction: 'Штраф до 80 тыс. руб. или лишение свободы до 2 лет.'
+                },
+                {
+                    code: 'КоАП РФ',
+                    number: 'ст. 12.8',
+                    title: 'Управление ТС в состоянии опьянения',
+                    text: 'Управление транспортным средством в состоянии алкогольного опьянения.',
+                    sanction: 'Штраф 30 тыс. руб. и лишение прав на 1.5-2 года.'
+                },
+                {
+                    code: 'УПК РФ',
+                    number: 'ст. 91',
+                    title: 'Основания задержания',
+                    text: 'Задержание подозреваемого в совершении преступления.',
+                    sanction: 'Срок задержания не более 48 часов.'
+                }
+            ];
+        }
+
+        // При загрузке показываем все статьи
+        window.onload = function() {
+            const articles = getLegislationArticles();
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+            articles.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.style.marginBottom = '15px';
+                div.innerHTML = `
+                    <h3 style="color:var(--accent);">${a.code} ${a.number} — ${a.title}</h3>
+                    <p style="margin:10px 0;">${a.text}</p>
+                    <p><strong>Санкция:</strong> ${a.sanction}</p>
+                `;
+                resultsContainer.appendChild(div);
+            });
+        };
+    </script>
+</body>
+</html>
