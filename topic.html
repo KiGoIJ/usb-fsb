@@ -21,7 +21,7 @@
             <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
             <span>Просмотр темы</span>
         </div>
-        <a href="forum.html"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> На главную</a>
     </header>
 
     <main style="padding: 30px 20px; max-width: 900px; margin:0 auto;">
@@ -44,7 +44,7 @@
         const topicId = parseInt(urlParams.get('id'));
         if (!topicId) {
             alert('Неверный идентификатор темы');
-            window.location.href = 'forum.html';
+            window.location.href = 'index.html';
         }
 
         function renderTopic() {
