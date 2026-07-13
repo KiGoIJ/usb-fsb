@@ -491,3 +491,42 @@ tr:last-child td {
         font-size: 0.7rem;
     }
 }
+
+/* Улучшение читаемости таблиц в консоли */
+#usersList table,
+#topicsList table,
+#reportsList table {
+    font-family: 'Inter', 'Montserrat', sans-serif; /* заменяем моноширинный на обычный */
+    font-size: 0.95rem;  /* чуть крупнее */
+    line-height: 1.5;
+}
+
+#usersList th,
+#topicsList th,
+#reportsList th {
+    font-weight: 600;
+    color: #3D4D55; /* тёмный цвет для заголовков */
+    background: rgba(61, 77, 85, 0.08);
+    padding: 12px 16px;
+}
+
+#usersList td,
+#topicsList td,
+#reportsList td {
+    padding: 12px 16px;
+    color: #2c3a42; /* насыщенный тёмный текст */
+    background: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+#usersList tr:hover td,
+#topicsList tr:hover td,
+#reportsList tr:hover td {
+    background: rgba(181, 136, 99, 0.08); /* лёгкий акцент при наведении */
+}
+
+/* Делаем кнопки в консоли чуть крупнее */
+.console-tabs .btn {
+    font-size: 0.95rem;
+    padding: 10px 24px;
+}
