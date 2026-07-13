@@ -26,6 +26,9 @@
                 Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
                 <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
             </span>
+            <span id="adminLink" style="display:none; margin-right:15px;">
+                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
+            </span>
             <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
     </header>
@@ -87,6 +90,10 @@
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
 
+        if (localStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('adminLink').style.display = 'inline';
+        }
+
         function updateStats() {
             const users = getUsers();
             const topics = getTopics();
@@ -98,7 +105,6 @@
             document.getElementById('statPosts').textContent = posts.length;
             document.getElementById('statReports').textContent = reports.length;
 
-            // Сводка последних 5 событий (темы и рапорты)
             const events = [];
             topics.forEach(t => events.push({ date: t.date, text: `📌 Новая тема: ${t.title} (${t.author})` }));
             reports.forEach(r => events.push({ date: r.date, text: `📄 Рапорт №${r.id} от ${r.author}` }));
