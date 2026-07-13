@@ -13,7 +13,7 @@ function saveUsers(users) {
 function logout() {
     localStorage.removeItem('auth');
     localStorage.removeItem('callsign');
-    localStorage.removeItem('isAdmin'); // удаляем флаг админа
+    localStorage.removeItem('isAdmin');
     window.location.href = 'login.html';
 }
 
@@ -45,7 +45,98 @@ function deleteUser(callsign) {
 }
 
 // ============================================================
-// 2. ФУНКЦИИ ДЛЯ ФОРУМА (темы и посты)
+// 2. УПРАВЛЕНИЕ ДОЛЖНОСТЯМИ И ЗВАНИЯМИ (НОВОЕ)
+// ============================================================
+
+function setUserPosition(callsign, position) {
+    const users = getUsers();
+    const user = users.find(u => u.callsign === callsign);
+    if (user) {
+        user.position = position || ''; // если пусто, сохраняем пустую строку
+        saveUsers(users);
+        return true;
+    }
+    return false;
+}
+
+// Установить ручное звание (если передать null, то удаляем ручное)
+function setCustomRank(callsign, customRank) {
+    const users = getUsers();
+    const user = users.find(u => u.callsign === callsign);
+    if (user) {
+        if (customRank && customRank.trim() !== '') {
+            user.customRank = customRank.trim();
+        } else {
+            delete user.customRank; // удаляем ручное звание
+        }
+        saveUsers(users);
+        return true;
+    }
+    return false;
+}
+
+// ============================================================
+// 3. СИСТЕМА ЗВАНИЙ (с учётом ручного переопределения)
+// ============================================================
+
+function getRank(callsign) {
+    const users = getUsers();
+    const user = users.find(u => u.callsign === callsign);
+    if (!user) return 'Неизвестно';
+    
+    // Если установлено ручное звание – возвращаем его
+    if (user.customRank) {
+        return user.customRank;
+    }
+    
+    // Иначе вычисляем по количеству сообщений
+    const topics = getTopics();
+    const posts = getPosts();
+    const totalMessages = topics.filter(t => t.author === callsign).length +
+                          posts.filter(p => p.author === callsign).length;
+    
+    let rank = 'Рядовой';
+    if (totalMessages >= 200) rank = 'Старший лейтенант';
+    else if (totalMessages >= 100) rank = 'Лейтенант';
+    else if (totalMessages >= 50) rank = 'Прапорщик';
+    else if (totalMessages >= 25) rank = 'Старший сержант';
+    else if (totalMessages >= 10) rank = 'Сержант';
+    else if (totalMessages >= 5) rank = 'Младший сержант';
+    else rank = 'Рядовой';
+    
+    return rank;
+}
+
+// Обновление звания (автоматическое) – только если нет ручного
+function updateRank(callsign) {
+    const users = getUsers();
+    const user = users.find(u => u.callsign === callsign);
+    if (!user) return;
+    
+    // Если есть ручное звание – не перезаписываем
+    if (user.customRank) return;
+    
+    // Иначе вычисляем и сохраняем в поле rank (для совместимости)
+    const topics = getTopics();
+    const posts = getPosts();
+    const totalMessages = topics.filter(t => t.author === callsign).length +
+                          posts.filter(p => p.author === callsign).length;
+    
+    let newRank = 'Рядовой';
+    if (totalMessages >= 200) newRank = 'Старший лейтенант';
+    else if (totalMessages >= 100) newRank = 'Лейтенант';
+    else if (totalMessages >= 50) newRank = 'Прапорщик';
+    else if (totalMessages >= 25) newRank = 'Старший сержант';
+    else if (totalMessages >= 10) newRank = 'Сержант';
+    else if (totalMessages >= 5) newRank = 'Младший сержант';
+    else newRank = 'Рядовой';
+    
+    user.rank = newRank; // сохраняем вычисленное значение (для отображения)
+    saveUsers(users);
+}
+
+// ============================================================
+// 4. ФУНКЦИИ ДЛЯ ФОРУМА
 // ============================================================
 
 function getTopics() {
@@ -78,7 +169,6 @@ function deleteTopic(topicId) {
     let topics = getTopics();
     topics = topics.filter(t => t.id !== topicId);
     saveTopics(topics);
-
     let posts = getPosts();
     posts = posts.filter(p => p.topicId !== topicId);
     savePosts(posts);
@@ -91,44 +181,7 @@ function deletePost(postId) {
 }
 
 // ============================================================
-// 3. СИСТЕМА ЗВАНИЙ
-// ============================================================
-
-function getRank(callsign) {
-    const users = getUsers();
-    const user = users.find(u => u.callsign === callsign);
-    if (!user) return 'Неизвестно';
-    return user.rank || 'Рядовой';
-}
-
-function updateRank(callsign) {
-    const users = getUsers();
-    const userIndex = users.findIndex(u => u.callsign === callsign);
-    if (userIndex === -1) return;
-    const user = users[userIndex];
-
-    const topics = getTopics();
-    const posts = getPosts();
-    const totalMessages = topics.filter(t => t.author === callsign).length +
-                          posts.filter(p => p.author === callsign).length;
-
-    let newRank = 'Рядовой';
-    if (totalMessages >= 200) newRank = 'Старший лейтенант';
-    else if (totalMessages >= 100) newRank = 'Лейтенант';
-    else if (totalMessages >= 50) newRank = 'Прапорщик';
-    else if (totalMessages >= 25) newRank = 'Старший сержант';
-    else if (totalMessages >= 10) newRank = 'Сержант';
-    else if (totalMessages >= 5) newRank = 'Младший сержант';
-    else newRank = 'Рядовой';
-
-    if (user.rank !== newRank) {
-        user.rank = newRank;
-        saveUsers(users);
-    }
-}
-
-// ============================================================
-// 4. СОЗДАНИЕ ТЕМ И ОТВЕТОВ (с поддержкой категорий)
+// 5. СОЗДАНИЕ ТЕМ И ОТВЕТОВ
 // ============================================================
 
 function createTopic(title, text, author, category) {
@@ -185,7 +238,7 @@ function addPost(topicId, text, author) {
 }
 
 // ============================================================
-// 5. КАТЕГОРИИ ФОРУМА
+// 6. КАТЕГОРИИ ФОРУМА
 // ============================================================
 
 function getCategories() {
@@ -200,7 +253,7 @@ function getCategoryById(id) {
 }
 
 // ============================================================
-// 6. РАПОРТЫ
+// 7. РАПОРТЫ
 // ============================================================
 
 function getReports() {
@@ -235,7 +288,7 @@ function changeReportStatus(reportId, newStatus) {
 }
 
 // ============================================================
-// 7. ЗАКОНОДАТЕЛЬСТВО (база статей)
+// 8. ЗАКОНОДАТЕЛЬСТВО
 // ============================================================
 
 function getLegislationArticles() {
