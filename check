@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Форма ЗП-02 – Запрос проверки</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <a href="index.html">← На главную</a>
+        <span>Форма ЗП-02 «Запрос на проверку»</span>
+    </header>
+    <main>
+        <h2>ЗАПРОС НА ПРОВЕДЕНИЕ СЛУЖЕБНОЙ ПРОВЕРКИ</h2>
+        <form id="checkForm">
+            <label>Инициатор (позывной):</label>
+            <input type="text" id="initiator" required>
+            <label>Основание:</label>
+            <textarea id="reason" rows="3" required></textarea>
+            <label>Предлагаемый состав комиссии:</label>
+            <textarea id="commission" rows="3"></textarea>
+            <label>Срок проверки (до даты):</label>
+            <input type="date" id="deadline">
+            <button type="submit">НАПРАВИТЬ ЗАПРОС</button>
+        </form>
+        <div id="checkMsg" style="display:none; color: #66fcf1; margin-top: 20px;"></div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('checkForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const check = {
+                id: 'ЗП-' + new Date().getTime(),
+                initiator: document.getElementById('initiator').value,
+                reason: document.getElementById('reason').value,
+                commission: document.getElementById('commission').value,
+                deadline: document.getElementById('deadline').value,
+                status: 'На рассмотрении'
+            };
+            saveCheck(check);
+            document.getElementById('checkMsg').style.display = 'block';
+            document.getElementById('checkMsg').textContent = `Запрос зарегистрирован под номером ${check.id}`;
+            this.reset();
+        });
+    </script>
+</body>
+</html>
