@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Форум УСБ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>Форум сотрудников УСБ УФСБ</span>
+        </div>
+        <div>
+            <span style="margin-right:20px; color:var(--text-dim);">
+                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
+                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+            </span>
+            <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
+            <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        </div>
+    </header>
+
+    <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h1 style="color:var(--accent);">📋 Темы форума</h1>
+            <a href="new_topic.html" class="btn"><i class="fa-solid fa-plus"></i> Новая тема</a>
+        </div>
+
+        <!-- Категории и темы -->
+        <div id="forumContainer"></div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+
+        function renderForum() {
+            const categories = getCategories();
+            const topics = getTopics();
+            const container = document.getElementById('forumContainer');
+            container.innerHTML = '';
+
+            categories.forEach(cat => {
+                const catTopics = topics.filter(t => t.category === cat.id);
+                const section = document.createElement('div');
+                section.style.marginBottom = '30px';
+                section.innerHTML = `
+                    <h2 style="color:var(--accent); border-bottom: 1px solid var(--border); padding-bottom:8px; margin-bottom:15px;">
+                        ${cat.icon} ${cat.name}
+                    </h2>
+                `;
+                if (catTopics.length === 0) {
+                    const p = document.createElement('p');
+                    p.style.color = 'var(--text-dim)';
+                    p.textContent = 'В этой категории пока нет тем.';
+                    section.appendChild(p);
+                } else {
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Заголовок</th>
+                                <th>Автор</th>
+                                <th>Дата создания</th>
+                                <th>Ответов</th>
+                                <th>Последнее сообщение</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    `;
+                    const tbody = table.querySelector('tbody');
+                    catTopics.sort((a, b) => new Date(b.lastPostDate) - new Date(a.lastPostDate));
+                    catTopics.forEach(t => {
+                        const row = tbody.insertRow();
+                        row.style.cursor = 'pointer';
+                        row.addEventListener('click', () => {
+                            window.location.href = `topic.html?id=${t.id}`;
+                        });
+                        const authorRank = getRank(t.author);
+                        row.innerHTML = `
+                            <td><strong>${escapeHtml(t.title)}</strong></td>
+                            <td>${escapeHtml(authorRank)} ${escapeHtml(t.author)}</td>
+                            <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
+                            <td>${t.postCount}</td>
+                            <td>${new Date(t.lastPostDate).toLocaleString('ru-RU')}</td>
+                        `;
+                    });
+                    section.appendChild(table);
+                }
+                container.appendChild(section);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onload = renderForum;
+    </script>
+</body>
+</html>
