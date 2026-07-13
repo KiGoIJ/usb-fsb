@@ -45,21 +45,20 @@ function deleteUser(callsign) {
 }
 
 // ============================================================
-// 2. УПРАВЛЕНИЕ ДОЛЖНОСТЯМИ И ЗВАНИЯМИ (НОВОЕ)
+// 2. УПРАВЛЕНИЕ ДОЛЖНОСТЯМИ И ЗВАНИЯМИ
 // ============================================================
 
 function setUserPosition(callsign, position) {
     const users = getUsers();
     const user = users.find(u => u.callsign === callsign);
     if (user) {
-        user.position = position || ''; // если пусто, сохраняем пустую строку
+        user.position = position || '';
         saveUsers(users);
         return true;
     }
     return false;
 }
 
-// Установить ручное звание (если передать null, то удаляем ручное)
 function setCustomRank(callsign, customRank) {
     const users = getUsers();
     const user = users.find(u => u.callsign === callsign);
@@ -67,7 +66,7 @@ function setCustomRank(callsign, customRank) {
         if (customRank && customRank.trim() !== '') {
             user.customRank = customRank.trim();
         } else {
-            delete user.customRank; // удаляем ручное звание
+            delete user.customRank;
         }
         saveUsers(users);
         return true;
@@ -83,18 +82,16 @@ function getRank(callsign) {
     const users = getUsers();
     const user = users.find(u => u.callsign === callsign);
     if (!user) return 'Неизвестно';
-    
-    // Если установлено ручное звание – возвращаем его
+
     if (user.customRank) {
         return user.customRank;
     }
-    
-    // Иначе вычисляем по количеству сообщений
+
     const topics = getTopics();
     const posts = getPosts();
     const totalMessages = topics.filter(t => t.author === callsign).length +
                           posts.filter(p => p.author === callsign).length;
-    
+
     let rank = 'Рядовой';
     if (totalMessages >= 200) rank = 'Старший лейтенант';
     else if (totalMessages >= 100) rank = 'Лейтенант';
@@ -103,25 +100,21 @@ function getRank(callsign) {
     else if (totalMessages >= 10) rank = 'Сержант';
     else if (totalMessages >= 5) rank = 'Младший сержант';
     else rank = 'Рядовой';
-    
+
     return rank;
 }
 
-// Обновление звания (автоматическое) – только если нет ручного
 function updateRank(callsign) {
     const users = getUsers();
     const user = users.find(u => u.callsign === callsign);
     if (!user) return;
-    
-    // Если есть ручное звание – не перезаписываем
     if (user.customRank) return;
-    
-    // Иначе вычисляем и сохраняем в поле rank (для совместимости)
+
     const topics = getTopics();
     const posts = getPosts();
     const totalMessages = topics.filter(t => t.author === callsign).length +
                           posts.filter(p => p.author === callsign).length;
-    
+
     let newRank = 'Рядовой';
     if (totalMessages >= 200) newRank = 'Старший лейтенант';
     else if (totalMessages >= 100) newRank = 'Лейтенант';
@@ -130,8 +123,8 @@ function updateRank(callsign) {
     else if (totalMessages >= 10) newRank = 'Сержант';
     else if (totalMessages >= 5) newRank = 'Младший сержант';
     else newRank = 'Рядовой';
-    
-    user.rank = newRank; // сохраняем вычисленное значение (для отображения)
+
+    user.rank = newRank;
     saveUsers(users);
 }
 
