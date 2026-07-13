@@ -10,7 +10,6 @@
     <title>Консоль управления</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Стили для модального окна */
         .modal {
             display: none;
             position: fixed;
@@ -56,6 +55,10 @@
         }
         .btn-group button {
             padding: 8px 20px;
+        }
+        .btn.small {
+            padding: 5px 12px;
+            font-size: 0.75rem;
         }
     </style>
 </head>
@@ -149,7 +152,7 @@
                 <tbody>`;
             users.forEach(u => {
                 const isAdmin = u.role === 'admin';
-                const rank = getRank(u.callsign); // используем функцию, учитывающую customRank
+                const rank = getRank(u.callsign);
                 const position = u.position || '—';
                 html += `<tr>
                     <td>${escapeHtml(u.callsign)}</td>
@@ -187,24 +190,16 @@
             const position = document.getElementById('editPosition').value.trim();
             const rank = document.getElementById('editRank').value.trim();
 
-            if (position) {
-                setUserPosition(callsign, position);
-            } else {
-                setUserPosition(callsign, ''); // очищаем должность
-            }
-
-            // Если поле звания не пустое – устанавливаем ручное, иначе удаляем ручное
+            setUserPosition(callsign, position || '');
             if (rank) {
                 setCustomRank(callsign, rank);
             } else {
-                setCustomRank(callsign, null); // удаляем ручное звание
+                setCustomRank(callsign, null);
             }
-
             closeModal();
-            renderUsers(); // обновляем таблицу
+            renderUsers();
         });
 
-        // Закрытие модалки по клику вне окна
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('editUserModal');
             if (event.target === modal) {
