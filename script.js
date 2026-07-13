@@ -13,7 +13,42 @@ function logout() {
     window.location.href = 'login.html';
 }
 
-// ===== Старые функции (для обратной совместимости, если понадобятся) =====
+// ===== Система званий =====
+function getRank(callsign) {
+    const users = getUsers();
+    const user = users.find(u => u.callsign === callsign);
+    if (!user) return 'Неизвестно';
+    return user.rank || 'Рядовой';
+}
+
+function updateRank(callsign) {
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.callsign === callsign);
+    if (userIndex === -1) return;
+    const user = users[userIndex];
+
+    // Подсчёт общего числа сообщений (темы + посты)
+    const topics = getTopics();
+    const posts = getPosts();
+    const totalMessages = topics.filter(t => t.author === callsign).length +
+                          posts.filter(p => p.author === callsign).length;
+
+    let newRank = 'Рядовой';
+    if (totalMessages >= 200) newRank = 'Старший лейтенант';
+    else if (totalMessages >= 100) newRank = 'Лейтенант';
+    else if (totalMessages >= 50) newRank = 'Прапорщик';
+    else if (totalMessages >= 25) newRank = 'Старший сержант';
+    else if (totalMessages >= 10) newRank = 'Сержант';
+    else if (totalMessages >= 5) newRank = 'Младший сержант';
+    else newRank = 'Рядовой';
+
+    if (user.rank !== newRank) {
+        user.rank = newRank;
+        saveUsers(users);
+    }
+}
+
+// ===== Старые функции (для обратной совместимости) =====
 function generateKRSP() {
     let lastNum = parseInt(localStorage.getItem('lastKRSP') || '0');
     lastNum++;
@@ -68,7 +103,7 @@ function deleteCheck(index) {
     location.reload();
 }
 
-// ===== НОВЫЕ ФУНКЦИИ ДЛЯ ФОРУМА =====
+// ===== ФУНКЦИИ ДЛЯ ФОРУМА =====
 function getTopics() {
     return JSON.parse(localStorage.getItem('forumTopics') || '[]');
 }
@@ -107,6 +142,7 @@ function createTopic(title, text, author) {
     });
     saveTopics(topics);
     savePosts(posts);
+    updateRank(author); // обновляем звание автора
     return topicId;
 }
 
@@ -129,6 +165,7 @@ function addPost(topicId, text, author) {
         topic.postCount = (topic.postCount || 0) + 1;
         saveTopics(topics);
     }
+    updateRank(author); // обновляем звание автора
 }
 
 function getPostsByTopic(topicId) {
