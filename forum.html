@@ -58,7 +58,8 @@
     <script>
         const callsign = localStorage.getItem('callsign') || 'Неизвестный';
         document.getElementById('userDisplay').textContent = callsign;
-        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        const rank = getRank(callsign);
+        document.getElementById('rankDisplay').textContent = '[' + rank + ']';
 
         function renderTopics() {
             const topics = getTopics();
@@ -80,7 +81,6 @@
                 row.addEventListener('click', () => {
                     window.location.href = `topic.html?id=${t.id}`;
                 });
-                // Получаем звание автора
                 const authorRank = getRank(t.author);
                 row.innerHTML = `
                     <td><strong>${escapeHtml(t.title)}</strong></td>
