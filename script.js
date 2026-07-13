@@ -13,7 +13,35 @@ function saveUsers(users) {
 function logout() {
     localStorage.removeItem('auth');
     localStorage.removeItem('callsign');
+    localStorage.removeItem('isAdmin'); // удаляем флаг админа
     window.location.href = 'login.html';
+}
+
+function getUserByCallsign(callsign) {
+    const users = getUsers();
+    return users.find(u => u.callsign === callsign);
+}
+
+function isAdmin(callsign) {
+    const user = getUserByCallsign(callsign);
+    return user && user.role === 'admin';
+}
+
+function setUserRole(callsign, role) {
+    const users = getUsers();
+    const user = users.find(u => u.callsign === callsign);
+    if (user) {
+        user.role = role;
+        saveUsers(users);
+        return true;
+    }
+    return false;
+}
+
+function deleteUser(callsign) {
+    let users = getUsers();
+    users = users.filter(u => u.callsign !== callsign);
+    saveUsers(users);
 }
 
 // ============================================================
@@ -44,6 +72,22 @@ function getTopicById(id) {
 function getPostsByTopic(topicId) {
     const posts = getPosts();
     return posts.filter(p => p.topicId === topicId).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function deleteTopic(topicId) {
+    let topics = getTopics();
+    topics = topics.filter(t => t.id !== topicId);
+    saveTopics(topics);
+
+    let posts = getPosts();
+    posts = posts.filter(p => p.topicId !== topicId);
+    savePosts(posts);
+}
+
+function deletePost(postId) {
+    let posts = getPosts();
+    posts = posts.filter(p => p.id !== postId);
+    savePosts(posts);
 }
 
 // ============================================================
@@ -100,7 +144,7 @@ function createTopic(title, text, author, category) {
         date: now,
         lastPostDate: now,
         postCount: 1,
-        category: category || 'general'    // если категория не указана – общая
+        category: category || 'general'
     });
 
     posts.push({
@@ -173,14 +217,28 @@ function saveReport(report) {
     saveReports(reports);
 }
 
+function deleteReport(reportId) {
+    let reports = getReports();
+    reports = reports.filter(r => r.id !== reportId);
+    saveReports(reports);
+}
+
+function changeReportStatus(reportId, newStatus) {
+    const reports = getReports();
+    const report = reports.find(r => r.id === reportId);
+    if (report) {
+        report.status = newStatus;
+        saveReports(reports);
+        return true;
+    }
+    return false;
+}
+
 // ============================================================
 // 7. ЗАКОНОДАТЕЛЬСТВО (база статей)
 // ============================================================
 
 function getLegislationArticles() {
-    // Здесь можно хранить статьи, но они также могут быть определены
-    // непосредственно в legislation.html. Оставляем на случай,
-    // если понадобится доступ из других скриптов.
     return [
         {
             code: 'УК РФ',
@@ -212,11 +270,3 @@ function getLegislationArticles() {
         }
     ];
 }
-
-// ============================================================
-// (НЕ ИСПОЛЬЗУЮТСЯ – оставлены для совместимости, если потребуется)
-// ============================================================
-
-// Функции generateKRSP, saveReport (старая), saveCheck и др. удалены,
-// так как они больше не нужны и могут конфликтовать с новыми.
-// Если вы используете старые страницы (report.html и т.п.) – они не поддерживаются.
