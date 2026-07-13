@@ -56,3 +56,9 @@
     letter-spacing: 1px;
     color: var(--accent);
 }
+
+/* Дополнительно для форума */
+#topicTable tbody tr:hover {
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+}
