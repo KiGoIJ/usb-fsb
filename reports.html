@@ -22,6 +22,9 @@
             <span>Система рапортов</span>
         </div>
         <div>
+            <span id="adminLink" style="display:none; margin-right:15px;">
+                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
+            </span>
             <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
             <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
@@ -33,7 +36,6 @@
             <button class="btn" onclick="showReportForm()"><i class="fa-solid fa-plus"></i> Подать рапорт</button>
         </div>
 
-        <!-- Форма подачи рапорта (скрыта по умолчанию) -->
         <div id="reportFormContainer" style="display:none;" class="card" style="margin-bottom:20px;">
             <h3 style="color:var(--accent);">Новый рапорт</h3>
             <form id="reportForm">
@@ -46,7 +48,6 @@
             </form>
         </div>
 
-        <!-- Фильтры по статусам -->
         <div style="margin-bottom:20px;">
             <button class="btn" onclick="filterReports('all')">Все</button>
             <button class="btn" onclick="filterReports('на рассмотрении')">На рассмотрении</button>
@@ -54,12 +55,15 @@
             <button class="btn" onclick="filterReports('отклонён')">Отклонены</button>
         </div>
 
-        <!-- Список рапортов -->
         <div id="reportsList"></div>
     </main>
 
     <script src="script.js"></script>
     <script>
+        if (localStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('adminLink').style.display = 'inline';
+        }
+
         let currentFilter = 'all';
 
         function showReportForm() {
