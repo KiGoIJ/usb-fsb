@@ -276,3 +276,9 @@ tr:hover td {
         grid-template-columns: 1fr;
     }
 }
+
+/* Дополнительные стили для кнопок фильтров */
+.btn.small {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+}
