@@ -1,128 +1,49 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Портал УСБ УФСБ</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <script>
-        if (localStorage.getItem('auth') !== 'true') {
-            window.location.href = 'login.html';
-        }
-    </script>
-    <header>
-        <div class="header-brand">
-            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
-            <span>Портал УСБ УФСБ</span>
+<main style="padding: 30px 20px; max-width: 1200px; margin:0 auto;">
+    <!-- СТАТИСТИКА -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fa-solid fa-users"></i>
+            <h3 id="statUsers">0</h3>
+            <p>Сотрудников</p>
         </div>
-        <div>
-            <span style="margin-right:20px; color:var(--text-dim);">
-                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
-                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
-            </span>
-            <span id="adminLink" style="display:none; margin-right:15px;">
-                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
-            </span>
-            <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        <div class="stat-card">
+            <i class="fa-solid fa-comments"></i>
+            <h3 id="statTopics">0</h3>
+            <p>Тем на форуме</p>
         </div>
-    </header>
-
-    <main style="padding: 30px 20px; max-width: 1200px; margin:0 auto;">
-        <!-- Статистика -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-            <div class="card" style="text-align:center;">
-                <i class="fa-solid fa-users" style="font-size:2rem; color:var(--accent);"></i>
-                <h3 id="statUsers">0</h3>
-                <p>Сотрудников</p>
-            </div>
-            <div class="card" style="text-align:center;">
-                <i class="fa-solid fa-comments" style="font-size:2rem; color:var(--accent);"></i>
-                <h3 id="statTopics">0</h3>
-                <p>Тем на форуме</p>
-            </div>
-            <div class="card" style="text-align:center;">
-                <i class="fa-solid fa-message" style="font-size:2rem; color:var(--accent);"></i>
-                <h3 id="statPosts">0</h3>
-                <p>Сообщений</p>
-            </div>
-            <div class="card" style="text-align:center;">
-                <i class="fa-solid fa-file-pen" style="font-size:2rem; color:var(--accent);"></i>
-                <h3 id="statReports">0</h3>
-                <p>Рапортов</p>
-            </div>
+        <div class="stat-card">
+            <i class="fa-solid fa-message"></i>
+            <h3 id="statPosts">0</h3>
+            <p>Сообщений</p>
         </div>
-
-        <!-- Оперативная сводка -->
-        <div class="card" style="margin-bottom: 30px;">
-            <h2 style="color:var(--accent);">📋 Оперативная сводка</h2>
-            <div id="operationalSummary" style="margin-top: 15px; color:var(--text-dim);">
-                <p>Последние события:</p>
-                <ul id="summaryList" style="list-style: none; padding-left:0;"></ul>
-            </div>
+        <div class="stat-card">
+            <i class="fa-solid fa-file-pen"></i>
+            <h3 id="statReports">0</h3>
+            <p>Рапортов</p>
         </div>
+    </div>
 
-        <!-- Навигационные карточки -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
-            <a href="forum.html" class="menu-card">
-                <i class="fa-solid fa-comments"></i>
-                <span>Форум</span>
-            </a>
-            <a href="reports.html" class="menu-card">
-                <i class="fa-solid fa-file-pen"></i>
-                <span>Рапорты</span>
-            </a>
-            <a href="legislation.html" class="menu-card">
-                <i class="fa-solid fa-scale-balanced"></i>
-                <span>Законодательство</span>
-            </a>
-        </div>
-    </main>
+    <!-- ОПЕРАТИВНАЯ СВОДКА -->
+    <div class="summary-block">
+        <h2>📋 Оперативная сводка</h2>
+        <ul id="summaryList">
+            <li style="color:var(--text-dim);">Нет событий</li>
+        </ul>
+    </div>
 
-    <script src="script.js"></script>
-    <script>
-        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
-        document.getElementById('userDisplay').textContent = callsign;
-        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
-
-        if (localStorage.getItem('isAdmin') === 'true') {
-            document.getElementById('adminLink').style.display = 'inline';
-        }
-
-        function updateStats() {
-            const users = getUsers();
-            const topics = getTopics();
-            const posts = getPosts();
-            const reports = getReports();
-
-            document.getElementById('statUsers').textContent = users.length;
-            document.getElementById('statTopics').textContent = topics.length;
-            document.getElementById('statPosts').textContent = posts.length;
-            document.getElementById('statReports').textContent = reports.length;
-
-            const events = [];
-            topics.forEach(t => events.push({ date: t.date, text: `📌 Новая тема: ${t.title} (${t.author})` }));
-            reports.forEach(r => events.push({ date: r.date, text: `📄 Рапорт №${r.id} от ${r.author}` }));
-            events.sort((a, b) => new Date(b.date) - new Date(a.date));
-            const list = document.getElementById('summaryList');
-            list.innerHTML = '';
-            events.slice(0, 5).forEach(e => {
-                const li = document.createElement('li');
-                li.textContent = e.text + ' (' + new Date(e.date).toLocaleString('ru-RU') + ')';
-                li.style.marginBottom = '5px';
-                list.appendChild(li);
-            });
-            if (events.length === 0) {
-                list.innerHTML = '<li>Нет событий</li>';
-            }
-        }
-
-        window.onload = updateStats;
-    </script>
-</body>
-</html>
+    <!-- НАВИГАЦИЯ -->
+    <div class="menu-grid">
+        <a href="forum.html" class="menu-card">
+            <i class="fa-solid fa-comments"></i>
+            <span>Форум</span>
+        </a>
+        <a href="reports.html" class="menu-card">
+            <i class="fa-solid fa-file-pen"></i>
+            <span>Рапорты</span>
+        </a>
+        <a href="legislation.html" class="menu-card">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>Законодательство</span>
+        </a>
+    </div>
+</main>
