@@ -1,27 +1,30 @@
 /* ======================================================
-   ПЕРЕМЕННЫЕ – новая палитра
+   ПЕРЕМЕННЫЕ – новая палитра #021024, #052659, #548383, #7DA0CA, #C1E8FF
    ====================================================== */
 :root {
-    --bg-primary: #021024;       /* основной фон */
-    --bg-secondary: #052659;     /* вторичный фон (шапка, футер, элементы) */
-    --bg-card: rgba(5, 38, 89, 0.6); /* карточки с прозрачностью */
-    --bg-card-hover: rgba(5, 38, 89, 0.8);
-    --accent: #548383;           /* основной акцент (бирюзовый) */
-    --accent-dark: #3f6a6a;      /* тёмный оттенок для кнопок */
-    --accent-light: #7DA0CA;     /* светлый голубой для ссылок, иконок */
+    --bg-primary: #021024;
+    --bg-secondary: #052659;
+    --bg-card: rgba(7, 38, 89, 0.6);
+    --bg-card-hover: rgba(7, 38, 89, 0.8);
+    --accent: #548383;
+    --accent-dark: #3d6a6a;
     --accent-glow: #54838344;
-    --text-primary: #C1E8FF;     /* светлый голубой для основного текста */
-    --text-secondary: #A0C4E0;   /* чуть темнее для второстепенного текста */
-    --text-dim: #7DA0CA;         /* для подписей и меток */
+    --text-primary: #C1E8FF;
+    --text-secondary: #7DA0CA;
+    --text-dim: #548383;
+    --text-on-dark: #C1E8FF;
     --border: rgba(125, 160, 202, 0.15);
-    --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-    --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.3);
+    --shadow: 0 12px 40px rgba(0,0,0,0.6);
+    --shadow-soft: 0 6px 24px rgba(0,0,0,0.3);
     --radius: 16px;
-    --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --font-main: 'Inter', 'Montserrat', sans-serif;
     --font-mono: 'Fira Code', monospace;
 }
 
+/* ======================================================
+   ГЛОБАЛЬНЫЕ СТИЛИ
+   ====================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -39,6 +42,7 @@ body {
     scroll-behavior: smooth;
 }
 
+/* Фоновый узор */
 body::before {
     content: "";
     position: fixed;
@@ -46,11 +50,61 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 10% 20%, rgba(84, 131, 131, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(125, 160, 202, 0.04) 0%, transparent 50%);
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(84, 131, 131, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(84, 131, 131, 0.05) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
 }
+
+/* ======================================================
+   АНИМАЦИИ
+   ====================================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Анимация для карточек при загрузке */
+.card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Задержки для стат-карточек */
+.stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* Анимация для навигационных карточек */
+.nav-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+.nav-card:nth-child(1) { animation-delay: 0.25s; }
+.nav-card:nth-child(2) { animation-delay: 0.3s; }
+.nav-card:nth-child(3) { animation-delay: 0.35s; }
 
 /* ======================================================
    ШАПКА
@@ -58,13 +112,12 @@ body::before {
 header {
     background: rgba(5, 38, 89, 0.85);
     backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
     padding: 14px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -77,7 +130,7 @@ header .header-brand {
 }
 header .emblem-small {
     height: 44px;
-    filter: drop-shadow(0 0 8px rgba(125, 160, 202, 0.3));
+    filter: drop-shadow(0 0 8px rgba(84, 131, 131, 0.3));
 }
 header span {
     font-weight: 500;
@@ -98,8 +151,8 @@ header a {
     transition: var(--transition);
 }
 header a:hover {
-    color: #fff;
-    background: rgba(125, 160, 202, 0.15);
+    color: var(--text-primary);
+    background: rgba(84, 131, 131, 0.15);
 }
 
 /* ======================================================
@@ -120,12 +173,15 @@ button, .btn {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 4px 16px rgba(84, 131, 131, 0.25);
+    box-shadow: 0 4px 16px rgba(84, 131, 131, 0.3);
 }
 button:hover, .btn:hover {
     background: var(--accent-dark);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(84, 131, 131, 0.35);
+    box-shadow: 0 8px 24px rgba(84, 131, 131, 0.4);
+}
+button:active, .btn:active {
+    transform: translateY(0);
 }
 button.danger, .btn.danger {
     background: #c0395a;
@@ -141,12 +197,11 @@ button.small, .btn.small {
 }
 
 /* ======================================================
-   КАРТОЧКИ
+   КАРТОЧКИ (полупрозрачные)
    ====================================================== */
 .card {
     background: var(--bg-card);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 28px 32px;
@@ -155,15 +210,14 @@ button.small, .btn.small {
     color: var(--text-primary);
 }
 .card:hover {
-    border-color: rgba(125, 160, 202, 0.3);
+    border-color: rgba(84, 131, 131, 0.3);
     box-shadow: var(--shadow);
-    background: var(--bg-card-hover);
     transform: translateY(-3px);
 }
 .card h2, .card h3 {
     color: var(--text-primary);
 }
-.card p, .card li {
+.card p, .card li, .card td {
     color: var(--text-secondary);
 }
 
@@ -171,7 +225,7 @@ button.small, .btn.small {
    ФОРМЫ
    ====================================================== */
 input, textarea, select {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.08);
     border: 1px solid var(--border);
     border-radius: 10px;
     color: var(--text-primary);
@@ -186,7 +240,10 @@ input:focus, textarea:focus, select:focus {
     border-color: var(--accent);
     outline: none;
     box-shadow: 0 0 0 4px rgba(84, 131, 131, 0.2);
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255,255,255,0.12);
+}
+input::placeholder, textarea::placeholder {
+    color: var(--text-dim);
 }
 label {
     font-weight: 500;
@@ -197,35 +254,37 @@ label {
 }
 
 /* ======================================================
-   ТАБЛИЦЫ (общие)
+   ТАБЛИЦЫ (улучшенная читаемость)
    ====================================================== */
 table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 6px;
+    border-spacing: 0 4px;
     margin-top: 16px;
     font-family: var(--font-main);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-primary);
 }
 th {
-    background: rgba(125, 160, 202, 0.12);
+    background: rgba(5, 38, 89, 0.3);
     padding: 14px 18px;
     text-align: left;
     font-weight: 600;
-    color: var(--accent-light);
+    color: var(--text-primary);
     border-bottom: 2px solid var(--border);
     border-radius: 10px 10px 0 0;
 }
 td {
     padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255,255,255,0.03);
     border-bottom: 1px solid transparent;
     vertical-align: middle;
     color: var(--text-secondary);
+    transition: var(--transition);
 }
 tr:hover td {
-    background: rgba(125, 160, 202, 0.06);
+    background: rgba(84, 131, 131, 0.1);
+    border-color: var(--accent);
 }
 tr:last-child td {
     border-bottom: none;
@@ -243,21 +302,20 @@ tr:last-child td {
 }
 .login-box {
     background: var(--bg-card);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
     padding: 48px 40px 40px;
     text-align: center;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     width: 420px;
     max-width: 92%;
-    border: 1px solid var(--border);
     box-shadow: var(--shadow);
-    color: var(--text-primary);
+    animation: scaleIn 0.4s ease;
 }
 .login-box img.emblem {
     width: 100px;
     margin-bottom: 16px;
-    filter: drop-shadow(0 0 20px rgba(125, 160, 202, 0.2));
+    filter: drop-shadow(0 0 20px rgba(84, 131, 131, 0.3));
 }
 .login-box h2 {
     font-weight: 600;
@@ -266,19 +324,16 @@ tr:last-child td {
     margin-bottom: 24px;
 }
 .login-box input {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.06);
     border: 1px solid var(--border);
     color: var(--text-primary);
-}
-.login-box input:focus {
-    background: rgba(255, 255, 255, 0.15);
 }
 .login-box button {
     width: 100%;
     margin-top: 8px;
 }
 .login-box a {
-    color: var(--accent-light);
+    color: var(--accent);
 }
 
 /* ======================================================
@@ -306,24 +361,23 @@ tr:last-child td {
 }
 .stat-card {
     background: var(--bg-card);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 24px 20px;
     text-align: center;
-    border: 1px solid var(--border);
     box-shadow: var(--shadow-soft);
-    color: var(--text-primary);
     transition: var(--transition);
+    animation: fadeInUp 0.5s ease forwards;
 }
 .stat-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow);
-    border-color: rgba(125, 160, 202, 0.3);
+    border-color: var(--accent);
 }
 .stat-card i {
     font-size: 2.4rem;
-    color: var(--accent-light);
+    color: var(--accent);
     margin-bottom: 8px;
 }
 .stat-card h3 {
@@ -351,7 +405,7 @@ tr:last-child td {
 }
 .summary-card li {
     padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--border);
     color: var(--text-secondary);
 }
 
@@ -363,30 +417,26 @@ tr:last-child td {
 }
 .nav-card {
     background: var(--bg-card);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 28px 20px;
     text-decoration: none;
     text-align: center;
     color: var(--text-primary);
-    border: 1px solid var(--border);
     box-shadow: var(--shadow-soft);
     transition: var(--transition);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    animation: fadeInUp 0.5s ease forwards;
 }
 .nav-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow);
-    border-color: rgba(125, 160, 202, 0.3);
+    border-color: var(--accent);
     background: var(--bg-card-hover);
 }
 .nav-card i {
     font-size: 2.6rem;
-    color: var(--accent-light);
+    color: var(--accent);
 }
 .nav-card span {
     font-weight: 500;
@@ -401,19 +451,19 @@ tr:last-child td {
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.06);
     color: var(--text-secondary);
 }
 .status-badge.registered {
     background: rgba(84, 131, 131, 0.2);
-    color: var(--accent-light);
+    color: #7DA0CA;
 }
 .status-badge.in-progress {
-    background: rgba(247, 183, 115, 0.2);
+    background: rgba(247, 183, 115, 0.15);
     color: #f7b773;
 }
 .status-badge.completed {
-    background: rgba(80, 200, 120, 0.2);
+    background: rgba(80, 200, 120, 0.15);
     color: #6fcf97;
 }
 
@@ -422,10 +472,11 @@ tr:last-child td {
    ====================================================== */
 .forum-category {
     margin-bottom: 36px;
+    animation: fadeInUp 0.5s ease forwards;
 }
 .forum-category h2 {
-    color: var(--accent-light);
-    border-bottom: 2px solid rgba(255,255,255,0.06);
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
     padding-bottom: 10px;
     margin-bottom: 18px;
     font-weight: 600;
@@ -433,12 +484,12 @@ tr:last-child td {
 }
 .forum-category .empty {
     color: var(--text-secondary);
-    opacity: 0.6;
+    opacity: 0.7;
     font-style: italic;
 }
 
 /* ======================================================
-   КОНСОЛЬ (специфичные стили для таблиц и вкладок)
+   КОНСОЛЬ (вкладки и анимация табов)
    ====================================================== */
 .console-tabs {
     display: flex;
@@ -447,13 +498,13 @@ tr:last-child td {
     flex-wrap: wrap;
 }
 .console-tabs .btn {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.06);
     color: var(--text-secondary);
     box-shadow: none;
     border: 1px solid transparent;
 }
 .console-tabs .btn:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.12);
 }
 .console-tabs .btn.active {
     background: var(--accent);
@@ -461,31 +512,73 @@ tr:last-child td {
     border-color: var(--accent);
 }
 
-/* Улучшенная читаемость таблиц в консоли */
-#usersList table,
-#topicsList table,
-#reportsList table {
-    font-family: var(--font-main);
-    font-size: 0.95rem;
+/* Анимация содержимого вкладок */
+.tab-content {
+    display: none;
+    animation: fadeInUp 0.4s ease forwards;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(2, 16, 36, 0.6);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.3s ease;
+}
+.modal-content {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow);
+    animation: scaleIn 0.3s ease;
+}
+.modal-content h2 {
     color: var(--text-primary);
+    margin-bottom: 20px;
 }
-#usersList th,
-#topicsList th,
-#reportsList th {
-    font-weight: 600;
-    color: var(--accent-light);
-    background: rgba(125, 160, 202, 0.1);
-}
-#usersList td,
-#topicsList td,
-#reportsList td {
+.modal-content label {
     color: var(--text-secondary);
-    padding: 12px 16px;
+    font-weight: 500;
+    display: block;
+    margin: 12px 0 4px;
 }
-#usersList tr:hover td,
-#topicsList tr:hover td,
-#reportsList tr:hover td {
-    background: rgba(125, 160, 202, 0.06);
+.modal-content input {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 10px;
+    width: 100%;
+    font-family: var(--font-main);
+}
+.modal-content input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(84, 131, 131, 0.2);
+}
+.modal-content .btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+.modal-content .btn-group button {
+    padding: 10px 24px;
 }
 
 /* ======================================================
@@ -528,26 +621,4 @@ tr:last-child td {
         padding: 10px 12px;
         font-size: 0.8rem;
     }
-    #usersList table,
-    #topicsList table,
-    #reportsList table {
-        font-size: 0.85rem;
-    }
-}
-
-/* ======================================================
-   ДОПОЛНИТЕЛЬНО: скроллбар
-   ====================================================== */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--accent-dark);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent);
 }
