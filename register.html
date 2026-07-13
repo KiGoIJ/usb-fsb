@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Регистрация – Щит-М</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <div class="login-box">
+        <img src="assets/emblem.png" alt="Эмблема" class="emblem" onerror="this.style.display='none'">
+        <h2>РЕГИСТРАЦИЯ<br>НОВОГО СОТРУДНИКА</h2>
+        <div style="position:relative; margin: 15px 0;">
+            <i class="fa-solid fa-user" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--accent);"></i>
+            <input type="text" id="callsign" placeholder="Придумайте позывной" style="padding-left:40px;" required>
+        </div>
+        <div style="position:relative; margin: 15px 0;">
+            <i class="fa-solid fa-lock" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--accent);"></i>
+            <input type="password" id="password" placeholder="Придумайте пароль" style="padding-left:40px;" required>
+        </div>
+        <button onclick="register()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+        <p id="error" style="color:var(--danger); margin-top:10px;"></p>
+        <p style="margin-top:15px;"><a href="login.html" style="color:var(--accent);">← Вернуться ко входу</a></p>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        function register() {
+            const callsign = document.getElementById('callsign').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorEl = document.getElementById('error');
+
+            if (!callsign || !password) {
+                errorEl.textContent = 'Заполните все поля';
+                return;
+            }
+            if (password.length < 4) {
+                errorEl.textContent = 'Пароль должен быть не менее 4 символов';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.callsign === callsign)) {
+                errorEl.textContent = 'Позывной уже занят';
+                return;
+            }
+
+            users.push({ callsign, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('auth', 'true');
+            localStorage.setItem('callsign', callsign);
+            window.location.href = 'forum.html';
+        }
+    </script>
+</body>
+</html>
