@@ -42,16 +42,21 @@
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const users = getUsers();
             if (users.find(u => u.callsign === callsign)) {
                 errorEl.textContent = 'Позывной уже занят';
                 return;
             }
 
-            users.push({ callsign, password, rank: 'Рядовой' });
-            localStorage.setItem('users', JSON.stringify(users));
+            // Первый пользователь – администратор
+            const role = users.length === 0 ? 'admin' : 'user';
+
+            users.push({ callsign, password, rank: 'Рядовой', role: role });
+            saveUsers(users);
+
             localStorage.setItem('auth', 'true');
             localStorage.setItem('callsign', callsign);
+            localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
             window.location.href = 'index.html';
         }
     </script>
