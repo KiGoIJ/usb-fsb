@@ -7,70 +7,47 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Щит-М – Главная</title>
+    <title>Щит-М – Вход</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-page">
+    <div class="login-box">
+        <img src="assets/emblem.png" alt="Эмблема" class="emblem" onerror="this.style.display='none'">
+        <h2>АВТОМАТИЗИРОВАННАЯ СИСТЕМА<br>УСБ УФСБ «ЩИТ-М»</h2>
+        <div style="position:relative; margin: 15px 0;">
+            <i class="fa-solid fa-user" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--accent);"></i>
+            <input type="text" id="callsign" placeholder="Позывной" style="padding-left:40px;">
+        </div>
+        <div style="position:relative; margin: 15px 0;">
+            <i class="fa-solid fa-lock" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--accent);"></i>
+            <input type="password" id="password" placeholder="Пароль" style="padding-left:40px;">
+        </div>
+        <button onclick="login()">ВОЙТИ</button>
+        <p id="error" style="color:var(--danger); margin-top:10px;"></p>
+        <p style="margin-top:15px;"><a href="register.html" style="color:var(--accent);">Регистрация нового сотрудника</a></p>
+    </div>
+    <script src="script.js"></script>
     <script>
-        if (localStorage.getItem('auth') !== 'true') {
-            window.location.href = 'login.html';
+        function login() {
+            const callsign = document.getElementById('callsign').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorEl = document.getElementById('error');
+
+            if (!callsign || !password) {
+                errorEl.textContent = 'Введите позывной и пароль';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.callsign === callsign && u.password === password);
+            if (user) {
+                localStorage.setItem('auth', 'true');
+                localStorage.setItem('callsign', callsign);
+                window.location.href = 'forum.html';   // <-- теперь на форум
+            } else {
+                errorEl.textContent = 'Неверный позывной или пароль';
+            }
         }
-    </script>
-    <header>
-        <div class="header-brand">
-            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
-            <span>АС УСБ «Щит-М» | Сотрудник: <strong id="userDisplay"></strong></span>
-        </div>
-        <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выход</a>
-    </header>
-
-    <!-- Новый официальный блок -->
-    <section class="hero">
-        <div class="hero-content">
-            <img src="assets/emblem.png" alt="Герб" class="hero-emblem" onerror="this.style.display='none'">
-            <h1 class="hero-title">ФЕДЕРАЛЬНАЯ СЛУЖБА БЕЗОПАСНОСТИ</h1>
-            <p class="hero-subtitle">Управление собственной безопасности</p>
-            <p class="hero-motto">«Щит и меч закона»</p>
-        </div>
-    </section>
-
-    <main class="dashboard">
-        <h2>РАБОЧИЙ СТОЛ ОПЕРАТИВНИКА</h2>
-        <div class="menu-grid">
-            <a href="report.html" class="menu-card">
-                <i class="fa-solid fa-file-circle-exclamation"></i>
-                <span>Подать рапорт</span>
-                <small>Форма Р-01 «Сигнал»</small>
-            </a>
-            <a href="check.html" class="menu-card">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                <span>Запросить проверку</span>
-                <small>Форма ЗП-02</small>
-            </a>
-            <a href="registry.html" class="menu-card">
-                <i class="fa-solid fa-database"></i>
-                <span>Реестр КРСП</span>
-                <small>Все обращения</small>
-            </a>
-            <a href="analytics.html" class="menu-card">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Аналитика</span>
-                <small>Сводки и угрозы</small>
-            </a>
-        </div>
-        <div class="current-time" id="timeDisplay"></div>
-    </main>
-
-    <script>
-        document.getElementById('userDisplay').textContent = localStorage.getItem('callsign') || 'Неизвестный';
-        function logout() {
-            localStorage.removeItem('auth');
-            localStorage.removeItem('callsign');
-            window.location.href = 'login.html';
-        }
-        setInterval(() => {
-            document.getElementById('timeDisplay').textContent = new Date().toLocaleString('ru-RU');
-        }, 1000);
     </script>
 </body>
 </html>
