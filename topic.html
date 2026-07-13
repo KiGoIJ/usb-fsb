@@ -97,9 +97,10 @@
                 document.getElementById('replyMsg').style.display = 'none';
             }, 3000);
             renderTopic();
-            // Обновляем звание автора в шапке (если это текущий пользователь)
+            // Обновляем звание в шапке (если это мы)
             if (author === localStorage.getItem('callsign')) {
-                document.getElementById('rankDisplay').textContent = '[' + getRank(author) + ']';
+                const rank = getRank(author);
+                document.getElementById('rankDisplay').textContent = '[' + rank + ']';
             }
         });
 
