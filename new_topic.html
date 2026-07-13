@@ -52,6 +52,8 @@
             }
 
             const topicId = createTopic(title, text, author);
+            // После создания темы звание автора обновится внутри createTopic
+            // Можно также обновить отображение в шапке, но мы переходим на страницу темы
             window.location.href = `topic.html?id=${topicId}`;
         });
     </script>
