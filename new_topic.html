@@ -21,12 +21,17 @@
             <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
             <span>Создание новой темы</span>
         </div>
-        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+        <a href="forum.html"><i class="fa-solid fa-arrow-left"></i> Назад</a>
     </header>
 
     <main style="padding: 30px 20px; max-width: 800px; margin:0 auto;">
         <h2 style="color:var(--accent); margin-bottom:20px;">✏️ Новая тема</h2>
         <form id="newTopicForm" class="card">
+            <label>Категория:</label>
+            <select id="topicCategory" required>
+                <option value="">Выберите категорию</option>
+            </select>
+
             <label>Заголовок темы:</label>
             <input type="text" id="topicTitle" required>
 
@@ -35,23 +40,33 @@
 
             <button type="submit"><i class="fa-solid fa-paper-plane"></i> Опубликовать</button>
         </form>
-        <div id="msg" style="display:none; margin-top:20px; text-align:center;"></div>
     </main>
 
     <script src="script.js"></script>
     <script>
+        // Загружаем категории в выпадающий список
+        const categories = getCategories();
+        const select = document.getElementById('topicCategory');
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.icon + ' ' + cat.name;
+            select.appendChild(option);
+        });
+
         document.getElementById('newTopicForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const category = document.getElementById('topicCategory').value;
             const title = document.getElementById('topicTitle').value.trim();
             const text = document.getElementById('topicText').value.trim();
             const author = localStorage.getItem('callsign') || 'Аноним';
 
-            if (!title || !text) {
+            if (!category || !title || !text) {
                 alert('Заполните все поля');
                 return;
             }
 
-            const topicId = createTopic(title, text, author);
+            const topicId = createTopic(title, text, author, category);
             window.location.href = `topic.html?id=${topicId}`;
         });
     </script>
