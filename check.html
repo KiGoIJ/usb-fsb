@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Форма ЗП-02</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>Форма ЗП-02 «Запрос на проверку»</span>
+        </div>
+        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+    </header>
+    <main>
+        <h2 style="color:var(--accent); margin-bottom:20px;">ЗАПРОС НА ПРОВЕДЕНИЕ СЛУЖЕБНОЙ ПРОВЕРКИ</h2>
+        <form id="checkForm" class="card">
+            <label>Инициатор (позывной):</label>
+            <input type="text" id="initiator" required>
+            
+            <label>Основание:</label>
+            <textarea id="reason" rows="3" required></textarea>
+            
+            <label>Предлагаемый состав комиссии:</label>
+            <textarea id="commission" rows="3"></textarea>
+            
+            <label>Срок проверки (до даты):</label>
+            <input type="date" id="deadline">
+            
+            <button type="submit"><i class="fa-solid fa-paper-plane"></i> НАПРАВИТЬ ЗАПРОС</button>
+        </form>
+        <div id="checkMsg" style="display:none; color:var(--success); margin-top:20px; text-align:center;"></div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('checkForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const check = {
+                id: 'ЗП-' + new Date().getTime(),
+                initiator: document.getElementById('initiator').value,
+                reason: document.getElementById('reason').value,
+                commission: document.getElementById('commission').value,
+                deadline: document.getElementById('deadline').value,
+                status: 'На рассмотрении'
+            };
+            saveCheck(check);
+            document.getElementById('checkMsg').style.display = 'block';
+            document.getElementById('checkMsg').textContent = `Запрос зарегистрирован под номером ${check.id}`;
+            this.reset();
+            setTimeout(() => {
+                document.getElementById('checkMsg').style.display = 'none';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
