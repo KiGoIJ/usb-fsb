@@ -1,4 +1,7 @@
-// ===== Управление пользователями =====
+// ============================================================
+// 1. УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ
+// ============================================================
+
 function getUsers() {
     return JSON.parse(localStorage.getItem('users') || '[]');
 }
@@ -13,7 +16,10 @@ function logout() {
     window.location.href = 'login.html';
 }
 
-// ===== ФУНКЦИИ ДЛЯ ФОРУМА (объявлены ДО updateRank) =====
+// ============================================================
+// 2. ФУНКЦИИ ДЛЯ ФОРУМА (темы и посты)
+// ============================================================
+
 function getTopics() {
     return JSON.parse(localStorage.getItem('forumTopics') || '[]');
 }
@@ -40,7 +46,10 @@ function getPostsByTopic(topicId) {
     return posts.filter(p => p.topicId === topicId).sort((a, b) => a.date.localeCompare(b.date));
 }
 
-// ===== Система званий =====
+// ============================================================
+// 3. СИСТЕМА ЗВАНИЙ
+// ============================================================
+
 function getRank(callsign) {
     const users = getUsers();
     const user = users.find(u => u.callsign === callsign);
@@ -74,20 +83,26 @@ function updateRank(callsign) {
     }
 }
 
-// ===== Создание темы и поста (с обновлением ранга) =====
-function createTopic(title, text, author) {
+// ============================================================
+// 4. СОЗДАНИЕ ТЕМ И ОТВЕТОВ (с поддержкой категорий)
+// ============================================================
+
+function createTopic(title, text, author, category) {
     const topics = getTopics();
     const posts = getPosts();
     const topicId = Date.now();
     const now = new Date().toISOString();
+
     topics.push({
         id: topicId,
         title: title,
         author: author,
         date: now,
         lastPostDate: now,
-        postCount: 1
+        postCount: 1,
+        category: category || 'general'    // если категория не указана – общая
     });
+
     posts.push({
         id: Date.now() + 1,
         topicId: topicId,
@@ -95,6 +110,7 @@ function createTopic(title, text, author) {
         date: now,
         text: text
     });
+
     saveTopics(topics);
     savePosts(posts);
     updateRank(author);
@@ -105,6 +121,7 @@ function addPost(topicId, text, author) {
     const posts = getPosts();
     const topics = getTopics();
     const now = new Date().toISOString();
+
     posts.push({
         id: Date.now(),
         topicId: topicId,
@@ -113,6 +130,7 @@ function addPost(topicId, text, author) {
         text: text
     });
     savePosts(posts);
+
     const topic = topics.find(t => t.id === topicId);
     if (topic) {
         topic.lastPostDate = now;
@@ -122,57 +140,83 @@ function addPost(topicId, text, author) {
     updateRank(author);
 }
 
-// ===== Старые функции (для совместимости, если нужны) =====
-function generateKRSP() {
-    let lastNum = parseInt(localStorage.getItem('lastKRSP') || '0');
-    lastNum++;
-    const num = 'КРСП-' + String(lastNum).padStart(3, '0');
-    localStorage.setItem('lastKRSP', lastNum);
-    return num;
+// ============================================================
+// 5. КАТЕГОРИИ ФОРУМА
+// ============================================================
+
+function getCategories() {
+    return [
+        { id: 'recruiting', name: 'Кадры / Рекрутинг', icon: '👤' },
+        { id: 'general',   name: 'Обучение и общение / Курилка', icon: '💬' }
+    ];
 }
 
-function saveReport(report) {
-    const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-    reports.push(report);
+function getCategoryById(id) {
+    return getCategories().find(c => c.id === id);
+}
+
+// ============================================================
+// 6. РАПОРТЫ
+// ============================================================
+
+function getReports() {
+    return JSON.parse(localStorage.getItem('reports') || '[]');
+}
+
+function saveReports(reports) {
     localStorage.setItem('reports', JSON.stringify(reports));
 }
 
-function saveCheck(check) {
-    const checks = JSON.parse(localStorage.getItem('checks') || '[]');
-    checks.push(check);
-    localStorage.setItem('checks', JSON.stringify(checks));
+function saveReport(report) {
+    const reports = getReports();
+    reports.push(report);
+    saveReports(reports);
 }
 
-function updateStatus(type, index, newStatus) {
-    if (!newStatus) return;
-    const data = JSON.parse(localStorage.getItem(type) || '[]');
-    if (data[index]) {
-        data[index].status = newStatus;
-        localStorage.setItem(type, JSON.stringify(data));
-        location.reload();
-    }
+// ============================================================
+// 7. ЗАКОНОДАТЕЛЬСТВО (база статей)
+// ============================================================
+
+function getLegislationArticles() {
+    // Здесь можно хранить статьи, но они также могут быть определены
+    // непосредственно в legislation.html. Оставляем на случай,
+    // если понадобится доступ из других скриптов.
+    return [
+        {
+            code: 'УК РФ',
+            number: 'ст. 105',
+            title: 'Убийство',
+            text: 'Умышленное причинение смерти другому человеку.',
+            sanction: 'Лишение свободы на срок от 6 до 15 лет.'
+        },
+        {
+            code: 'УК РФ',
+            number: 'ст. 158',
+            title: 'Кража',
+            text: 'Тайное хищение чужого имущества.',
+            sanction: 'Штраф до 80 тыс. руб. или лишение свободы до 2 лет.'
+        },
+        {
+            code: 'КоАП РФ',
+            number: 'ст. 12.8',
+            title: 'Управление ТС в состоянии опьянения',
+            text: 'Управление транспортным средством в состоянии алкогольного опьянения.',
+            sanction: 'Штраф 30 тыс. руб. и лишение прав на 1.5-2 года.'
+        },
+        {
+            code: 'УПК РФ',
+            number: 'ст. 91',
+            title: 'Основания задержания',
+            text: 'Задержание подозреваемого в совершении преступления.',
+            sanction: 'Срок задержания не более 48 часов.'
+        }
+    ];
 }
 
-function deleteItem(type, index) {
-    const data = JSON.parse(localStorage.getItem(type) || '[]');
-    data.splice(index, 1);
-    localStorage.setItem(type, JSON.stringify(data));
-    location.reload();
-}
+// ============================================================
+// (НЕ ИСПОЛЬЗУЮТСЯ – оставлены для совместимости, если потребуется)
+// ============================================================
 
-function updateCheckStatus(index, newStatus) {
-    if (!newStatus) return;
-    const checks = JSON.parse(localStorage.getItem('checks') || '[]');
-    if (checks[index]) {
-        checks[index].status = newStatus;
-        localStorage.setItem('checks', JSON.stringify(checks));
-        location.reload();
-    }
-}
-
-function deleteCheck(index) {
-    const checks = JSON.parse(localStorage.getItem('checks') || '[]');
-    checks.splice(index, 1);
-    localStorage.setItem('checks', JSON.stringify(checks));
-    location.reload();
-}
+// Функции generateKRSP, saveReport (старая), saveCheck и др. удалены,
+// так как они больше не нужны и могут конфликтовать с новыми.
+// Если вы используете старые страницы (report.html и т.п.) – они не поддерживаются.
