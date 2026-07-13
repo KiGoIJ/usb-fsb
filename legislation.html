@@ -22,6 +22,9 @@
             <span>Собрание законодательства</span>
         </div>
         <div>
+            <span id="adminLink" style="display:none; margin-right:15px;">
+                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
+            </span>
             <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
             <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
@@ -46,6 +49,10 @@
 
     <script src="script.js"></script>
     <script>
+        if (localStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('adminLink').style.display = 'inline';
+        }
+
         function searchLegislation() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
             const codeFilter = document.getElementById('codeFilter').value;
@@ -84,41 +91,6 @@
             });
         }
 
-        // Пример заполнения базы данных (можно добавить больше статей)
-        function getLegislationArticles() {
-            return [
-                {
-                    code: 'УК РФ',
-                    number: 'ст. 105',
-                    title: 'Убийство',
-                    text: 'Умышленное причинение смерти другому человеку.',
-                    sanction: 'Лишение свободы на срок от 6 до 15 лет.'
-                },
-                {
-                    code: 'УК РФ',
-                    number: 'ст. 158',
-                    title: 'Кража',
-                    text: 'Тайное хищение чужого имущества.',
-                    sanction: 'Штраф до 80 тыс. руб. или лишение свободы до 2 лет.'
-                },
-                {
-                    code: 'КоАП РФ',
-                    number: 'ст. 12.8',
-                    title: 'Управление ТС в состоянии опьянения',
-                    text: 'Управление транспортным средством в состоянии алкогольного опьянения.',
-                    sanction: 'Штраф 30 тыс. руб. и лишение прав на 1.5-2 года.'
-                },
-                {
-                    code: 'УПК РФ',
-                    number: 'ст. 91',
-                    title: 'Основания задержания',
-                    text: 'Задержание подозреваемого в совершении преступления.',
-                    sanction: 'Срок задержания не более 48 часов.'
-                }
-            ];
-        }
-
-        // При загрузке показываем все статьи
         window.onload = function() {
             const articles = getLegislationArticles();
             const resultsContainer = document.getElementById('results');
