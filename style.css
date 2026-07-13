@@ -3,7 +3,7 @@
     --bg-primary: #0a0c10;
     --bg-secondary: #11161f;
     --bg-card: #1a1f2b;
-    --accent: #00b4d8;        /* холодный голубой */
+    --accent: #00b4d8;
     --accent-dark: #0077b6;
     --text-primary: #e0e1dd;
     --text-dim: #8d99ae;
@@ -29,7 +29,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* ===== ФОНОВЫЕ ЭФФЕКТЫ ===== */
 body::before {
     content: "";
     position: fixed;
@@ -41,7 +40,6 @@ body::before {
     pointer-events: none;
 }
 
-/* ===== ШАПКА ===== */
 header {
     background: rgba(10, 12, 16, 0.95);
     backdrop-filter: blur(12px);
@@ -80,7 +78,6 @@ header a:hover {
     filter: drop-shadow(0 0 6px rgba(0,180,216,0.4));
 }
 
-/* ===== КНОПКИ ===== */
 button, .btn {
     background: var(--accent-dark);
     color: #fff;
@@ -116,7 +113,6 @@ button.danger:hover {
     box-shadow: 0 0 15px rgba(255,77,109,0.3);
 }
 
-/* ===== КАРТОЧКИ ===== */
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -130,7 +126,6 @@ button.danger:hover {
     transform: translateY(-2px);
 }
 
-/* ===== ФОРМЫ ===== */
 input, textarea, select {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
@@ -158,7 +153,6 @@ label {
     margin-top: 12px;
 }
 
-/* ===== ТАБЛИЦЫ ===== */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -184,7 +178,6 @@ tr:hover td {
     background: rgba(255,255,255,0.02);
 }
 
-/* ===== АВТОРИЗАЦИЯ ===== */
 .login-page {
     display: flex;
     justify-content: center;
@@ -216,7 +209,6 @@ tr:hover td {
     font-size: 1.5rem;
 }
 
-/* ===== ДЭШБОРД (устарел, но оставлен для совместимости) ===== */
 .dashboard {
     padding: 40px 20px;
     text-align: center;
@@ -261,7 +253,6 @@ tr:hover td {
     font-size: 2.5rem;
 }
 
-/* ===== РЕЕСТР (СПЕЦИФИЧНЫЕ СТИЛИ) ===== */
 .status-badge {
     display: inline-block;
     padding: 4px 10px;
@@ -275,7 +266,6 @@ tr:hover td {
 .status-badge.in-progress { background: #5c4a2a; color: #ffb703; }
 .status-badge.completed { background: #2a5c2a; color: #80ed99; }
 
-/* Адаптив */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
