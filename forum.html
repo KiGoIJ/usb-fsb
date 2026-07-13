@@ -22,7 +22,11 @@
             <span>Форум сотрудников УСБ УФСБ</span>
         </div>
         <div>
-            <span style="margin-right:20px; color:var(--text-dim);">Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong></span>
+            <span style="margin-right:20px; color:var(--text-dim);">
+                Сотрудник: 
+                <strong id="userDisplay" style="color:var(--text-primary);"></strong>
+                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+            </span>
             <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
     </header>
@@ -52,7 +56,9 @@
 
     <script src="script.js"></script>
     <script>
-        document.getElementById('userDisplay').textContent = localStorage.getItem('callsign') || 'Неизвестный';
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
 
         function renderTopics() {
             const topics = getTopics();
@@ -66,7 +72,6 @@
             }
             emptyMsg.style.display = 'none';
 
-            // Сортируем по дате последнего сообщения (сначала новые)
             topics.sort((a, b) => new Date(b.lastPostDate) - new Date(a.lastPostDate));
 
             topics.forEach(t => {
@@ -75,9 +80,11 @@
                 row.addEventListener('click', () => {
                     window.location.href = `topic.html?id=${t.id}`;
                 });
+                // Получаем звание автора
+                const authorRank = getRank(t.author);
                 row.innerHTML = `
                     <td><strong>${escapeHtml(t.title)}</strong></td>
-                    <td>${escapeHtml(t.author)}</td>
+                    <td>${escapeHtml(authorRank)} ${escapeHtml(t.author)}</td>
                     <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
                     <td>${t.postCount}</td>
                     <td>${new Date(t.lastPostDate).toLocaleString('ru-RU')}</td>
