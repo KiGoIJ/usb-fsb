@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Форма Р-01 – Подача рапорта</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <a href="index.html">← На главную</a>
+        <span>Форма Р-01 «Сигнал»</span>
+    </header>
+    <main>
+        <h2>РЕГИСТРАЦИЯ СООБЩЕНИЯ О ПРОИСШЕСТВИИ</h2>
+        <form id="reportForm">
+            <label>Позывной заявителя:</label>
+            <input type="text" id="applicant" required>
+            
+            <label>Дата и время происшествия:</label>
+            <input type="datetime-local" id="incidentTime" required>
+            
+            <label>Место:</label>
+            <input type="text" id="place" required>
+            
+            <label>Краткое описание:</label>
+            <textarea id="description" rows="4" required></textarea>
+            
+            <label>Участники/фигуранты:</label>
+            <input type="text" id="persons">
+            
+            <label>Принятые меры:</label>
+            <textarea id="measures" rows="3"></textarea>
+            
+            <button type="submit">ОТПРАВИТЬ РАПОРТ</button>
+        </form>
+        <div id="successMsg" style="display:none; color: #66fcf1; margin-top: 20px;"></div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const report = {
+                id: generateKRSP(),
+                date: new Date().toISOString(),
+                applicant: document.getElementById('applicant').value,
+                incidentTime: document.getElementById('incidentTime').value,
+                place: document.getElementById('place').value,
+                description: document.getElementById('description').value,
+                persons: document.getElementById('persons').value,
+                measures: document.getElementById('measures').value,
+                status: 'Зарегистрирован'
+            };
+            saveReport(report);
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('successMsg').textContent = `Рапорт зарегистрирован под номером ${report.id}`;
+            this.reset();
+        });
+    </script>
+</body>
+</html>
