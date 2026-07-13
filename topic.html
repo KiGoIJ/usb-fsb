@@ -21,7 +21,7 @@
             <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
             <span>Просмотр темы</span>
         </div>
-        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+        <a href="forum.html"><i class="fa-solid fa-arrow-left"></i> Назад</a>
     </header>
 
     <main style="padding: 30px 20px; max-width: 900px; margin:0 auto;">
@@ -44,7 +44,7 @@
         const topicId = parseInt(urlParams.get('id'));
         if (!topicId) {
             alert('Неверный идентификатор темы');
-            window.location.href = 'index.html';
+            window.location.href = 'forum.html';
         }
 
         function renderTopic() {
@@ -55,8 +55,12 @@
             }
 
             const authorRank = getRank(topic.author);
+            const category = getCategoryById(topic.category);
+            const categoryName = category ? category.icon + ' ' + category.name : 'Без категории';
+
             document.getElementById('topicHeader').innerHTML = `
                 <h2 style="color:var(--accent);">${escapeHtml(topic.title)}</h2>
+                <p><strong>Категория:</strong> ${categoryName}</p>
                 <p><strong>Автор:</strong> ${escapeHtml(authorRank)} ${escapeHtml(topic.author)} &nbsp;|&nbsp; <strong>Создано:</strong> ${new Date(topic.date).toLocaleString('ru-RU')}</p>
                 <p><strong>Ответов:</strong> ${topic.postCount}</p>
             `;
@@ -97,11 +101,6 @@
                 document.getElementById('replyMsg').style.display = 'none';
             }, 3000);
             renderTopic();
-            // Обновляем звание в шапке (если это мы)
-            if (author === localStorage.getItem('callsign')) {
-                const rank = getRank(author);
-                document.getElementById('rankDisplay').textContent = '[' + rank + ']';
-            }
         });
 
         function escapeHtml(text) {
