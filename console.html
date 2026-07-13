@@ -9,94 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Консоль управления</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Дополнительные стили для модального окна и консоли */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background: var(--bg-card);
-            color: var(--text-primary);
-            padding: 32px;
-            border-radius: var(--radius);
-            max-width: 500px;
-            width: 90%;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .modal-content h2 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-        .modal-content label {
-            color: var(--text-secondary);
-            font-weight: 500;
-            display: block;
-            margin: 12px 0 4px;
-        }
-        .modal-content input {
-            background: #fff;
-            border: 1px solid #d0c0b5;
-            color: var(--text-primary);
-            padding: 10px 14px;
-            border-radius: 10px;
-            width: 100%;
-            font-family: var(--font-main);
-        }
-        .modal-content input:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(181, 136, 99, 0.2);
-        }
-        .modal-content .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            justify-content: flex-end;
-        }
-        .modal-content .btn-group button {
-            padding: 10px 24px;
-        }
-        .console-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .console-tabs .btn {
-            background: rgba(255,255,255,0.08);
-            color: var(--text-on-dark);
-            box-shadow: none;
-            border: 1px solid transparent;
-        }
-        .console-tabs .btn:hover {
-            background: rgba(255,255,255,0.15);
-        }
-        .console-tabs .btn.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content:first-of-type {
-            display: block;
-        }
-        .table-wrap {
-            overflow-x: auto;
-        }
-    </style>
 </head>
 <body>
     <script>
@@ -116,17 +28,17 @@
     </header>
 
     <main style="padding: 30px 20px; max-width: 1200px; margin:0 auto;">
-        <h1 style="color:var(--text-on-dark); font-size:2rem; font-weight:700; margin-bottom:24px;">🛠️ Панель управления</h1>
+        <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">🛠️ Панель управления</h1>
 
         <!-- Вкладки -->
         <div class="console-tabs">
-            <button class="btn active" onclick="showTab('users')">Пользователи</button>
-            <button class="btn" onclick="showTab('topics')">Темы</button>
-            <button class="btn" onclick="showTab('reports')">Рапорты</button>
+            <button class="btn active" data-tab="users" onclick="showTab('users')">Пользователи</button>
+            <button class="btn" data-tab="topics" onclick="showTab('topics')">Темы</button>
+            <button class="btn" data-tab="reports" onclick="showTab('reports')">Рапорты</button>
         </div>
 
         <!-- Вкладка: Пользователи -->
-        <div id="tabUsers" class="tab-content">
+        <div id="tabUsers" class="tab-content active">
             <div class="card">
                 <h2 style="color:var(--text-primary); margin-bottom:16px;">👥 Управление пользователями</h2>
                 <div class="table-wrap" id="usersList"></div>
@@ -134,7 +46,7 @@
         </div>
 
         <!-- Вкладка: Темы -->
-        <div id="tabTopics" class="tab-content" style="display:none;">
+        <div id="tabTopics" class="tab-content">
             <div class="card">
                 <h2 style="color:var(--text-primary); margin-bottom:16px;">📋 Управление темами</h2>
                 <div class="table-wrap" id="topicsList"></div>
@@ -142,7 +54,7 @@
         </div>
 
         <!-- Вкладка: Рапорты -->
-        <div id="tabReports" class="tab-content" style="display:none;">
+        <div id="tabReports" class="tab-content">
             <div class="card">
                 <h2 style="color:var(--text-primary); margin-bottom:16px;">📄 Управление рапортами</h2>
                 <div class="table-wrap" id="reportsList"></div>
@@ -174,18 +86,26 @@
 
     <script src="script.js"></script>
     <script>
-        // Функции для вкладок
+        // Функция переключения вкладок с анимацией
         function showTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.console-tabs .btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
-            // Находим кнопку с соответствующим onclick и делаем активной
-            const btns = document.querySelectorAll('.console-tabs .btn');
-            btns.forEach(b => {
-                if (b.getAttribute('onclick').includes(tab)) {
-                    b.classList.add('active');
-                }
+            // Скрываем все вкладки
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
             });
+            // Показываем нужную
+            const activeTab = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            activeTab.style.display = 'block';
+            // Небольшая задержка для запуска анимации (чтобы display:block сначала применился)
+            requestAnimationFrame(() => {
+                activeTab.classList.add('active');
+            });
+
+            // Обновляем активную кнопку
+            document.querySelectorAll('.console-tabs .btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.console-tabs .btn[data-tab="${tab}"]`).classList.add('active');
+
+            // Рендерим данные
             if (tab === 'users') renderUsers();
             if (tab === 'topics') renderTopics();
             if (tab === 'reports') renderReports();
@@ -373,9 +293,6 @@
 
         // По умолчанию показываем пользователей
         window.onload = function() {
-            // Убедимся, что активна первая вкладка
-            document.querySelector('.console-tabs .btn.active')?.classList.remove('active');
-            document.querySelector('.console-tabs .btn:first-child')?.classList.add('active');
             showTab('users');
         };
     </script>
