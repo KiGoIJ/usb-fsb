@@ -48,7 +48,6 @@
                 return;
             }
 
-            // Добавляем новое поле rank со значением 'Рядовой'
             users.push({ callsign, password, rank: 'Рядовой' });
             localStorage.setItem('users', JSON.stringify(users));
             localStorage.setItem('auth', 'true');
