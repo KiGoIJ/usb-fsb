@@ -1,5 +1,4 @@
 // ===== Управление пользователями =====
-
 function getUsers() {
     return JSON.parse(localStorage.getItem('users') || '[]');
 }
@@ -8,14 +7,13 @@ function saveUsers(users) {
     localStorage.setItem('users', JSON.stringify(users));
 }
 
-// (Опционально) Функция выхода уже есть в index.html, но можно добавить очистку только auth и callsign
 function logout() {
     localStorage.removeItem('auth');
     localStorage.removeItem('callsign');
     window.location.href = 'login.html';
 }
 
-// ===== Старые функции остаются без изменений =====
+// ===== Старые функции (для обратной совместимости, если понадобятся) =====
 function generateKRSP() {
     let lastNum = parseInt(localStorage.getItem('lastKRSP') || '0');
     lastNum++;
@@ -70,8 +68,7 @@ function deleteCheck(index) {
     location.reload();
 }
 
-// ===== ФУНКЦИИ ДЛЯ ФОРУМА =====
-
+// ===== НОВЫЕ ФУНКЦИИ ДЛЯ ФОРУМА =====
 function getTopics() {
     return JSON.parse(localStorage.getItem('forumTopics') || '[]');
 }
