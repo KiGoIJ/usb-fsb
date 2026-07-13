@@ -26,6 +26,9 @@
                 Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
                 <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
             </span>
+            <span id="adminLink" style="display:none; margin-right:15px;">
+                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
+            </span>
             <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
             <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
@@ -37,7 +40,6 @@
             <a href="new_topic.html" class="btn"><i class="fa-solid fa-plus"></i> Новая тема</a>
         </div>
 
-        <!-- Категории и темы -->
         <div id="forumContainer"></div>
     </main>
 
@@ -46,6 +48,10 @@
         const callsign = localStorage.getItem('callsign') || 'Неизвестный';
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+
+        if (localStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('adminLink').style.display = 'inline';
+        }
 
         function renderForum() {
             const categories = getCategories();
