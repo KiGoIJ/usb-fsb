@@ -67,6 +67,10 @@
                 <i class="fa-solid fa-users-gear"></i>
                 <span>Кадры</span>
             </a>
+            <a href="documents.html" class="nav-card">
+                <i class="fa-solid fa-database"></i>
+                <span>База данных</span>
+            </a>
         </div>
     </main>
 
@@ -87,7 +91,6 @@
             document.getElementById('statUsers').textContent = users.length;
             document.getElementById('statReports').textContent = reports.length;
 
-            // Сводка только по рапортам
             const events = [];
             reports.forEach(r => events.push({ date: r.date, text: `📄 Рапорт №${r.id} от ${r.author}` }));
             events.sort((a, b) => new Date(b.date) - new Date(a.date));
