@@ -19,7 +19,7 @@
     <header>
         <div class="header-brand">
             <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
-            <span>Кадровый состав УСБ УФСБ</span>
+            <span>Форум сотрудников УСБ УФСБ</span>
         </div>
         <div>
             <span style="margin-right:16px; color:var(--text-dim);">
@@ -36,9 +36,12 @@
     </header>
 
     <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
-        <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">👤 Штатное расписание</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700;">📋 Темы форума</h1>
+            <a href="new_topic.html" class="btn"><i class="fa-solid fa-plus"></i> Новая тема</a>
+        </div>
 
-        <div id="staffContainer"></div>
+        <div id="forumContainer"></div>
     </main>
 
     <script src="script.js"></script>
@@ -52,36 +55,53 @@
             document.getElementById('adminLink').style.display = 'inline';
         }
 
-        function renderStaff() {
-            const container = document.getElementById('staffContainer');
-            const staffData = getStaffData();
+        function renderForum() {
+            const categories = getCategories();
+            const topics = getTopics();
+            const container = document.getElementById('forumContainer');
+            container.innerHTML = '';
 
-            if (staffData.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-secondary);">Нет сотрудников.</p>';
-                return;
-            }
-
-            // Строим таблицу
-            let html = `<table>
-                <thead>
-                    <tr>
-                        <th>Должность</th>
-                        <th>Количество</th>
-                        <th>Сотрудники</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            staffData.forEach(item => {
-                const count = item.members.length;
-                const membersList = item.members.join(', ');
-                html += `<tr>
-                    <td><strong>${escapeHtml(item.position)}</strong></td>
-                    <td>${count}</td>
-                    <td>${escapeHtml(membersList)}</td>
-                </tr>`;
+            categories.forEach(cat => {
+                const catTopics = topics.filter(t => t.category === cat.id);
+                const div = document.createElement('div');
+                div.className = 'forum-category';
+                div.innerHTML = `<h2>${cat.icon} ${cat.name}</h2>`;
+                if (catTopics.length === 0) {
+                    const p = document.createElement('p');
+                    p.className = 'empty';
+                    p.textContent = 'В этой категории пока нет тем.';
+                    div.appendChild(p);
+                } else {
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead><tr><th>Заголовок</th><th>Автор</th><th>Дата</th><th>Ответов</th><th>Последнее сообщение</th></tr></thead>
+                        <tbody></tbody>
+                    `;
+                    const tbody = table.querySelector('tbody');
+                    catTopics.sort((a, b) => new Date(b.lastPostDate) - new Date(a.lastPostDate));
+                    catTopics.forEach(t => {
+                        const row = tbody.insertRow();
+                        row.style.cursor = 'pointer';
+                        row.addEventListener('click', () => {
+                            window.location.href = `topic.html?id=${t.id}`;
+                        });
+                        const authorRank = getRank(t.author);
+                        const position = getPosition(t.author);
+                        row.innerHTML = `
+                            <td><strong>${escapeHtml(t.title)}</strong></td>
+                            <td>
+                                ${escapeHtml(authorRank)} ${escapeHtml(t.author)}
+                                <br><span style="font-size:0.75rem; color:var(--text-secondary);">${escapeHtml(position)}</span>
+                            </td>
+                            <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
+                            <td>${t.postCount}</td>
+                            <td>${new Date(t.lastPostDate).toLocaleString('ru-RU')}</td>
+                        `;
+                    });
+                    div.appendChild(table);
+                }
+                container.appendChild(div);
             });
-            html += '</tbody></table>';
-            container.innerHTML = html;
         }
 
         function escapeHtml(text) {
@@ -90,7 +110,7 @@
             return div.innerHTML;
         }
 
-        window.onload = renderStaff;
+        window.onload = renderForum;
     </script>
 </body>
 </html>
