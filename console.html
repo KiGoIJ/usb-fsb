@@ -33,16 +33,8 @@
             box-shadow: var(--shadow);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .modal-content h2 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-        .modal-content label {
-            color: var(--text-secondary);
-            font-weight: 500;
-            display: block;
-            margin: 12px 0 4px;
-        }
+        .modal-content h2 { color: var(--text-primary); margin-bottom: 20px; }
+        .modal-content label { color: var(--text-secondary); font-weight: 500; display: block; margin: 12px 0 4px; }
         .modal-content input {
             background: rgba(255,255,255,0.08);
             border: 1px solid var(--border);
@@ -63,9 +55,7 @@
             margin-top: 24px;
             justify-content: flex-end;
         }
-        .modal-content .btn-group button {
-            padding: 10px 24px;
-        }
+        .modal-content .btn-group button { padding: 10px 24px; }
         .console-tabs {
             display: flex;
             gap: 12px;
@@ -78,9 +68,7 @@
             box-shadow: none;
             border: 1px solid transparent;
         }
-        .console-tabs .btn:hover {
-            background: rgba(255,255,255,0.12);
-        }
+        .console-tabs .btn:hover { background: rgba(255,255,255,0.12); }
         .console-tabs .btn.active {
             background: var(--accent);
             color: #fff;
@@ -90,12 +78,8 @@
             display: none;
             animation: fadeInUp 0.4s ease forwards;
         }
-        .tab-content.active {
-            display: block;
-        }
-        .table-wrap {
-            overflow-x: auto;
-        }
+        .tab-content.active { display: block; }
+        .table-wrap { overflow-x: auto; }
     </style>
 </head>
 <body>
@@ -122,7 +106,6 @@
 
     <main style="padding: 30px 20px; max-width: 1200px; margin:0 auto;">
         <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">🛠️ Панель управления</h1>
-
         <div class="console-tabs">
             <button class="btn active" data-tab="users" onclick="showTab('users')">Пользователи</button>
             <button class="btn" data-tab="topics" onclick="showTab('topics')">Темы</button>
@@ -149,7 +132,6 @@
         </div>
     </main>
 
-    <!-- Модальное окно для редактирования пользователя -->
     <div id="editUserModal" class="modal">
         <div class="modal-content">
             <h2>✏️ Редактирование пользователя</h2>
@@ -159,10 +141,7 @@
                 <input type="text" id="editPosition" placeholder="Введите должность (например, Начальник отделения)">
                 <label>Звание (ручное переопределение):</label>
                 <input type="text" id="editRank" placeholder="Оставьте пустым для автоматического расчёта">
-                <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:6px;">
-                    Если указать звание вручную, оно не будет меняться автоматически при увеличении сообщений. 
-                    Чтобы вернуть автоматический расчёт – очистите поле.
-                </p>
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:6px;">Если указать звание вручную, оно не будет меняться автоматически при увеличении сообщений. Чтобы вернуть автоматический расчёт – очистите поле.</p>
                 <div class="btn-group">
                     <button type="button" class="btn" onclick="closeModal()">Отмена</button>
                     <button type="submit" class="btn">Сохранить</button>
@@ -188,10 +167,8 @@
             requestAnimationFrame(() => {
                 activeTab.classList.add('active');
             });
-
             document.querySelectorAll('.console-tabs .btn').forEach(b => b.classList.remove('active'));
             document.querySelector(`.console-tabs .btn[data-tab="${tab}"]`).classList.add('active');
-
             if (tab === 'users') renderUsers();
             if (tab === 'topics') renderTopics();
             if (tab === 'reports') renderReports();
@@ -204,17 +181,7 @@
                 container.innerHTML = '<p style="color:var(--text-secondary);">Нет пользователей</p>';
                 return;
             }
-            let html = `<table>
-                <thead>
-                    <tr>
-                        <th>Позывной</th>
-                        <th>Должность</th>
-                        <th>Звание</th>
-                        <th>Роль</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+            let html = `<table><thead><tr><th>Позывной</th><th>Должность</th><th>Звание</th><th>Роль</th><th>Действия</th></tr></thead><tbody>`;
             users.forEach(u => {
                 const isAdmin = u.role === 'admin';
                 const rank = getRank(u.callsign);
@@ -243,32 +210,22 @@
             document.getElementById('editRank').value = user.customRank || '';
             document.getElementById('editUserModal').style.display = 'flex';
         }
-
         function closeModal() {
             document.getElementById('editUserModal').style.display = 'none';
         }
-
         document.getElementById('editUserForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const callsign = document.getElementById('editCallsign').value;
             const position = document.getElementById('editPosition').value.trim();
             const rank = document.getElementById('editRank').value.trim();
-
             setUserPosition(callsign, position || '');
-            if (rank) {
-                setCustomRank(callsign, rank);
-            } else {
-                setCustomRank(callsign, null);
-            }
+            if (rank) { setCustomRank(callsign, rank); }
+            else { setCustomRank(callsign, null); }
             closeModal();
             renderUsers();
         });
-
         window.addEventListener('click', function(event) {
-            const modal = document.getElementById('editUserModal');
-            if (event.target === modal) {
-                closeModal();
-            }
+            if (event.target === document.getElementById('editUserModal')) closeModal();
         });
 
         function makeAdmin(callsign) {
@@ -277,14 +234,12 @@
                 renderUsers();
             }
         }
-
         function removeAdmin(callsign) {
             if (confirm(`Снять роль администратора с ${callsign}?`)) {
                 setUserRole(callsign, 'user');
                 renderUsers();
             }
         }
-
         function deleteUserAccount(callsign) {
             if (confirm(`Удалить пользователя ${callsign}?`)) {
                 deleteUser(callsign);
@@ -307,15 +262,12 @@
                     <td><strong>${escapeHtml(t.title)}</strong></td>
                     <td>${escapeHtml(t.author)}</td>
                     <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
-                    <td>
-                        <button class="btn danger small" onclick="deleteTopicAdmin(${t.id})">Удалить</button>
-                    </td>
+                    <td><button class="btn danger small" onclick="deleteTopicAdmin(${t.id})">Удалить</button></td>
                 </tr>`;
             });
             html += '</tbody></table>';
             container.innerHTML = html;
         }
-
         function deleteTopicAdmin(topicId) {
             if (confirm('Удалить тему и все сообщения в ней?')) {
                 deleteTopic(topicId);
@@ -351,14 +303,12 @@
             html += '</tbody></table>';
             container.innerHTML = html;
         }
-
         function changeReportStatusAdmin(reportId, status) {
             if (confirm(`Изменить статус рапорта на "${status}"?`)) {
                 changeReportStatus(reportId, status);
                 renderReports();
             }
         }
-
         function deleteReportAdmin(reportId) {
             if (confirm('Удалить рапорт?')) {
                 deleteReport(reportId);
@@ -371,7 +321,6 @@
             div.textContent = text;
             return div.innerHTML;
         }
-
         window.onload = function() {
             showTab('users');
         };
