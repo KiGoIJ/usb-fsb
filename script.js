@@ -298,7 +298,6 @@ function deleteDocument(docId) {
     saveDocuments(docs);
 }
 
-// Вспомогательная функция для генерации ID
 function generateDocId() {
     return 'Д-' + Date.now();
 }
