@@ -40,7 +40,6 @@
             <h1 style="color:var(--text-primary);">📄 Реестр рапортов</h1>
             <button class="btn" onclick="showReportForm()"><i class="fa-solid fa-plus"></i> Подать рапорт</button>
         </div>
-
         <div id="reportFormContainer" style="display:none;" class="card" style="margin-bottom:20px;">
             <h3 style="color:var(--accent);">Новый рапорт</h3>
             <form id="reportForm">
@@ -52,14 +51,12 @@
                 <button type="button" onclick="hideReportForm()" class="danger" style="margin-left:10px;">Отмена</button>
             </form>
         </div>
-
         <div style="margin-bottom:20px;">
             <button class="btn" onclick="filterReports('all')">Все</button>
             <button class="btn" onclick="filterReports('на рассмотрении')">На рассмотрении</button>
             <button class="btn" onclick="filterReports('одобрен')">Одобрены</button>
             <button class="btn" onclick="filterReports('отклонён')">Отклонены</button>
         </div>
-
         <div id="reportsList"></div>
     </main>
 
@@ -69,7 +66,6 @@
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
         document.getElementById('positionDisplay').textContent = getPosition(callsign);
-
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
         }
@@ -90,7 +86,6 @@
             const text = document.getElementById('reportText').value.trim();
             const author = localStorage.getItem('callsign') || 'Аноним';
             if (!subject || !text) return;
-
             const report = {
                 id: 'Р-' + Date.now(),
                 subject: subject,
@@ -108,7 +103,6 @@
             const reports = getReports();
             const container = document.getElementById('reportsList');
             container.innerHTML = '';
-
             let filtered = reports;
             if (filter !== 'all') {
                 filtered = reports.filter(r => r.status === filter);
@@ -117,21 +111,8 @@
                 container.innerHTML = '<p style="color:var(--text-dim); text-align:center;">Нет рапортов</p>';
                 return;
             }
-
             const table = document.createElement('table');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>№</th>
-                        <th>Тема</th>
-                        <th>Автор</th>
-                        <th>Дата</th>
-                        <th>Статус</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            `;
+            table.innerHTML = `<thead><tr><th>№</th><th>Тема</th><th>Автор</th><th>Дата</th><th>Статус</th><th>Действия</th></tr></thead><tbody></tbody>`;
             const tbody = table.querySelector('tbody');
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
             filtered.forEach(r => {
@@ -178,7 +159,6 @@
             div.textContent = text;
             return div.innerHTML;
         }
-
         window.onload = function() {
             renderReports('all');
         };
