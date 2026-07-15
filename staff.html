@@ -37,7 +37,6 @@
 
     <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
         <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">👤 Штатное расписание</h1>
-
         <div id="staffContainer"></div>
     </main>
 
@@ -47,7 +46,6 @@
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
         document.getElementById('positionDisplay').textContent = getPosition(callsign);
-
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
         }
@@ -86,7 +84,6 @@
             div.textContent = text;
             return div.innerHTML;
         }
-
         window.onload = renderStaff;
     </script>
 </body>
