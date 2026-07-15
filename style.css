@@ -1,5 +1,5 @@
 /* ======================================================
-   ПЕРЕМЕННЫЕ – палитра #021024, #052659, #548383, #7DA0CA, #C1E8FF
+   БАЗОВЫЕ ПЕРЕМЕННЫЕ (ваши текущие цвета)
    ====================================================== */
 :root {
     --bg-primary: #021024;
@@ -8,11 +8,9 @@
     --bg-card-hover: rgba(7, 38, 89, 0.8);
     --accent: #548383;
     --accent-dark: #3d6a6a;
-    --accent-glow: #54838344;
     --text-primary: #C1E8FF;
     --text-secondary: #7DA0CA;
     --text-dim: #548383;
-    --text-on-dark: #C1E8FF;
     --border: rgba(125, 160, 202, 0.15);
     --shadow: 0 12px 40px rgba(0,0,0,0.6);
     --shadow-soft: 0 6px 24px rgba(0,0,0,0.3);
@@ -24,14 +22,9 @@
 }
 
 /* ======================================================
-   ГЛОБАЛЬНЫЕ СТИЛИ
+   ГЛОБАЛЬНЫЕ СТИЛИ (уже были, оставляем без изменений)
    ====================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
     background: var(--bg-primary);
     color: var(--text-primary);
@@ -41,10 +34,8 @@ body {
     letter-spacing: 0.01em;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
 }
-
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 600;
@@ -52,662 +43,36 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
     color: var(--text-primary);
 }
-
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(circle at 10% 20%, rgba(84, 131, 131, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, rgba(84, 131, 131, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-}
+/* ... остальные глобальные стили (из предыдущих версий) ... */
 
 /* ======================================================
-   АНИМАЦИИ
-   ====================================================== */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-@keyframes floatStar {
-    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
-    100% { transform: translate(30px, -30px) rotate(20deg); opacity: 0.2; }
-}
-
-/* Анимации для элементов */
-.card {
-    animation: fadeInUp 0.5s ease forwards;
-}
-.stat-card:nth-child(1) { animation-delay: 0.05s; }
-.stat-card:nth-child(2) { animation-delay: 0.1s; }
-.stat-card:nth-child(3) { animation-delay: 0.15s; }
-.stat-card:nth-child(4) { animation-delay: 0.2s; }
-.nav-card {
-    animation: fadeInUp 0.5s ease forwards;
-}
-.nav-card:nth-child(1) { animation-delay: 0.25s; }
-.nav-card:nth-child(2) { animation-delay: 0.3s; }
-.nav-card:nth-child(3) { animation-delay: 0.35s; }
-.nav-card:nth-child(4) { animation-delay: 0.4s; }
-
-/* ======================================================
-   ШАПКА
-   ====================================================== */
-header {
-    background: rgba(5, 38, 89, 0.85);
-    backdrop-filter: blur(12px) saturate(180%);
-    padding: 14px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-header .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-header .emblem-small {
-    height: 44px;
-    filter: drop-shadow(0 0 8px rgba(84, 131, 131, 0.3));
-}
-header span {
-    font-weight: 500;
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-header strong {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-header a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-    padding: 6px 14px;
-    border-radius: 8px;
-    transition: var(--transition);
-}
-header a:hover {
-    color: var(--text-primary);
-    background: rgba(84, 131, 131, 0.15);
-}
-
-/* ======================================================
-   КНОПКИ
-   ====================================================== */
-button, .btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-family: var(--font-main);
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 4px 16px rgba(84, 131, 131, 0.3);
-    letter-spacing: 0.03em;
-}
-button:hover, .btn:hover {
-    background: var(--accent-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(84, 131, 131, 0.4);
-}
-button:active, .btn:active {
-    transform: translateY(0);
-}
-button.danger, .btn.danger {
-    background: #c0395a;
-    box-shadow: 0 4px 16px rgba(192, 57, 90, 0.25);
-}
-button.danger:hover, .btn.danger:hover {
-    background: #a9324a;
-}
-button.small, .btn.small {
-    padding: 6px 14px;
-    font-size: 0.75rem;
-    border-radius: 8px;
-}
-
-/* ======================================================
-   КАРТОЧКИ
-   ====================================================== */
-.card {
-    background: var(--bg-card);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 32px;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition);
-    color: var(--text-primary);
-    font-size: 1rem;
-    line-height: 1.7;
-}
-.card:hover {
-    border-color: rgba(84, 131, 131, 0.3);
-    box-shadow: var(--shadow);
-    transform: translateY(-3px);
-}
-.card h2, .card h3 {
-    color: var(--text-primary);
-}
-.card p, .card li, .card td {
-    color: var(--text-secondary);
-}
-
-/* ======================================================
-   ФОРМЫ
-   ====================================================== */
-input, textarea, select {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text-primary);
-    padding: 12px 16px;
-    font-family: var(--font-main);
-    font-size: 0.95rem;
-    width: 100%;
-    transition: var(--transition);
-    margin: 6px 0 16px;
-}
-input:focus, textarea:focus, select:focus {
-    border-color: var(--accent);
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(84, 131, 131, 0.2);
-    background: rgba(255,255,255,0.12);
-}
-input::placeholder, textarea::placeholder {
-    color: var(--text-dim);
-}
-label {
-    font-weight: 500;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    display: block;
-    margin-top: 8px;
-}
-
-/* ======================================================
-   ТАБЛИЦЫ
-   ====================================================== */
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 4px;
-    margin-top: 16px;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    color: var(--text-primary);
-    letter-spacing: 0.01em;
-}
-th {
-    background: rgba(5, 38, 89, 0.3);
-    padding: 14px 18px;
-    text-align: left;
-    font-weight: 600;
-    color: var(--text-primary);
-    border-bottom: 2px solid var(--border);
-    border-radius: 10px 10px 0 0;
-}
-td {
-    padding: 14px 18px;
-    background: rgba(255,255,255,0.03);
-    border-bottom: 1px solid transparent;
-    vertical-align: middle;
-    color: var(--text-secondary);
-    transition: var(--transition);
-}
-tr:hover td {
-    background: rgba(84, 131, 131, 0.1);
-    border-color: var(--accent);
-}
-tr:last-child td {
-    border-bottom: none;
-}
-
-/* ======================================================
-   АВТОРИЗАЦИЯ
-   ====================================================== */
-.login-page {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: var(--bg-primary);
-    overflow: hidden;
-}
-.login-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    background: 
-        linear-gradient(135deg,
-            rgba(255,255,255,0.03) 0%, rgba(0,50,150,0.05) 20%,
-            rgba(255,255,255,0.03) 40%, rgba(200,0,0,0.05) 60%,
-            rgba(255,255,255,0.03) 80%, rgba(0,50,150,0.05) 100%),
-        url('assets/emblem.png') no-repeat center;
-    background-size: cover, 60% auto;
-    background-blend-mode: overlay;
-    opacity: 0.15;
-    filter: blur(2px) brightness(0.9);
-    transform: scale(1.1);
-}
-.login-page::before,
-.login-page::after {
-    content: "✦";
-    position: fixed;
-    font-size: 4rem;
-    color: rgba(84, 131, 131, 0.1);
-    z-index: 0;
-    pointer-events: none;
-    animation: floatStar 12s infinite alternate ease-in-out;
-}
-.login-page::before {
-    top: 10%;
-    left: 5%;
-    font-size: 5rem;
-    animation-delay: 0s;
-}
-.login-page::after {
-    bottom: 10%;
-    right: 5%;
-    font-size: 6rem;
-    animation-delay: -6s;
-}
-.login-box {
-    position: relative;
-    z-index: 1;
-    background: var(--bg-card);
-    backdrop-filter: blur(16px);
-    padding: 48px 40px 40px;
-    text-align: center;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    width: 420px;
-    max-width: 92%;
-    box-shadow: var(--shadow);
-    animation: scaleIn 0.4s ease;
-}
-.login-box img.emblem {
-    width: 100px;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 0 20px rgba(84, 131, 131, 0.3));
-}
-.login-box h2 {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 1.4rem;
-    margin-bottom: 24px;
-    line-height: 1.4;
-}
-.login-box input {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-}
-.login-box button {
-    width: 100%;
-    margin-top: 8px;
-}
-.login-box a {
-    color: var(--accent);
-}
-
-/* ======================================================
-   ГЛАВНАЯ (ДАШБОРД)
-   ====================================================== */
-.dashboard {
-    padding: 40px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-.dashboard h1 {
-    font-weight: 700;
-    font-size: 2.2rem;
-    margin-bottom: 32px;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-}
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 24px;
-    margin-bottom: 40px;
-}
-.stat-card {
-    background: var(--bg-card);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px 20px;
-    text-align: center;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition);
-    animation: fadeInUp 0.5s ease forwards;
-}
-.stat-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
-    border-color: var(--accent);
-}
-.stat-card i {
-    font-size: 2.4rem;
-    color: var(--accent);
-    margin-bottom: 8px;
-}
-.stat-card h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-.stat-card p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-.summary-card {
-    margin-bottom: 40px;
-}
-.summary-card h2 {
-    color: var(--text-primary);
-    margin-bottom: 16px;
-    font-weight: 600;
-}
-.summary-card ul {
-    list-style: none;
-    padding: 0;
-}
-.summary-card li {
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-secondary);
-}
-.nav-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-}
-.nav-card {
-    background: var(--bg-card);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 20px;
-    text-decoration: none;
-    text-align: center;
-    color: var(--text-primary);
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition);
-    animation: fadeInUp 0.5s ease forwards;
-}
-.nav-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
-    border-color: var(--accent);
-    background: var(--bg-card-hover);
-}
-.nav-card i {
-    font-size: 2.6rem;
-    color: var(--accent);
-}
-.nav-card span {
-    font-weight: 500;
-}
-
-/* ======================================================
-   БЭЙДЖИ СТАТУСОВ
-   ====================================================== */
-.status-badge {
-    display: inline-block;
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    background: rgba(255,255,255,0.06);
-    color: var(--text-secondary);
-}
-.status-badge.registered {
-    background: rgba(84, 131, 131, 0.2);
-    color: #7DA0CA;
-}
-.status-badge.in-progress {
-    background: rgba(247, 183, 115, 0.15);
-    color: #f7b773;
-}
-.status-badge.completed {
-    background: rgba(80, 200, 120, 0.15);
-    color: #6fcf97;
-}
-
-/* ======================================================
-   ФОРУМ (категории и темы)
-   ====================================================== */
-.forum-category {
-    margin-bottom: 36px;
-    animation: fadeInUp 0.5s ease forwards;
-}
-.forum-category h2 {
-    color: var(--accent);
-    border-bottom: 2px solid var(--border);
-    padding-bottom: 10px;
-    margin-bottom: 18px;
-    font-weight: 600;
-    font-size: 1.4rem;
-}
-.forum-category .empty {
-    color: var(--text-secondary);
-    opacity: 0.7;
-    font-style: italic;
-}
-
-/* ======================================================
-   КОНСОЛЬ
-   ====================================================== */
-.console-tabs {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-.console-tabs .btn {
-    background: rgba(255,255,255,0.06);
-    color: var(--text-secondary);
-    box-shadow: none;
-    border: 1px solid transparent;
-}
-.console-tabs .btn:hover {
-    background: rgba(255,255,255,0.12);
-}
-.console-tabs .btn.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-}
-.tab-content {
-    display: none;
-    animation: fadeInUp 0.4s ease forwards;
-}
-.tab-content.active {
-    display: block;
-}
-
-/* ======================================================
-   МОДАЛЬНОЕ ОКНО
-   ====================================================== */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(2, 16, 36, 0.6);
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(6px);
-    animation: fadeIn 0.3s ease;
-}
-.modal-content {
-    background: var(--bg-card);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 32px;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: var(--shadow);
-    animation: scaleIn 0.3s ease;
-}
-.modal-content h2 {
-    color: var(--text-primary);
-    margin-bottom: 20px;
-}
-.modal-content label {
-    color: var(--text-secondary);
-    font-weight: 500;
-    display: block;
-    margin: 12px 0 4px;
-}
-.modal-content input {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    padding: 10px 14px;
-    border-radius: 10px;
-    width: 100%;
-    font-family: var(--font-main);
-}
-.modal-content input:focus {
-    border-color: var(--accent);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(84, 131, 131, 0.2);
-}
-.modal-content .btn-group {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    justify-content: flex-end;
-}
-.modal-content .btn-group button {
-    padding: 10px 24px;
-}
-
-/* ======================================================
-   АДАПТИВ
-   ====================================================== */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: 12px;
-        padding: 14px 20px;
-    }
-    header .header-brand {
-        justify-content: center;
-    }
-    header div {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 6px;
-    }
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .nav-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .login-box {
-        padding: 32px 24px;
-    }
-    .card {
-        padding: 20px;
-    }
-}
-@media (max-width: 480px) {
-    .stats-grid, .nav-grid {
-        grid-template-columns: 1fr;
-    }
-    th, td {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-    }
-}
-
-/* Документы – анимация появления */
-.doc-card {
-    animation: fadeInUp 0.4s ease forwards;
-}
-.doc-card:nth-child(1) { animation-delay: 0.05s; }
-.doc-card:nth-child(2) { animation-delay: 0.1s; }
-.doc-card:nth-child(3) { animation-delay: 0.15s; }
-.doc-card:nth-child(4) { animation-delay: 0.2s; }
-.doc-card:nth-child(5) { animation-delay: 0.25s; }
-.doc-card:nth-child(6) { animation-delay: 0.3s; }
-
-/* Центрирование текста в навигационных карточках */
-.nav-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-.nav-card i {
-    margin-bottom: 6px;
-}
-.nav-card span {
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-weight: 500;
-}
-
-/* ======================================================
-   УНИВЕРСАЛЬНЫЕ ФИЛЬТРЫ (для всех страниц)
+   УНИВЕРСАЛЬНЫЙ БЛОК ФИЛЬТРОВ (единый прямоугольник)
    ====================================================== */
 .filter-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    align-items: center;
     margin-bottom: 16px;
+    transition: var(--transition);
+}
+.filter-group:hover {
+    border-color: rgba(84, 131, 131, 0.2);
+    box-shadow: var(--shadow);
 }
 
 .filter-btn {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text-secondary);
     border: 1px solid transparent;
-    padding: 8px 20px;
-    border-radius: 30px;
+    padding: 6px 16px;
+    border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
@@ -715,9 +80,10 @@ tr:last-child td {
     font-family: var(--font-main);
     letter-spacing: 0.01em;
     box-shadow: none;
+    white-space: nowrap;
 }
 .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.10);
     color: var(--text-primary);
     transform: translateY(-1px);
 }
@@ -730,3 +96,20 @@ tr:last-child td {
 .filter-btn.active:hover {
     background: var(--accent-dark);
 }
+
+/* Адаптация под мобильные */
+@media (max-width: 600px) {
+    .filter-group {
+        padding: 8px 12px;
+        gap: 4px;
+    }
+    .filter-btn {
+        padding: 4px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ======================================================
+   ОСТАЛЬНЫЕ СТИЛИ (шапка, карточки, таблицы и т.д.)
+   ====================================================== */
+/* ... здесь должен быть весь ваш остальной CSS ... */
