@@ -162,10 +162,70 @@
         .doc-card {
             animation: fadeInUp 0.4s ease forwards;
         }
-        /* Дополнительно для выбора категорий в модалке */
+
+        /* ===== КРАСИВЫЕ КНОПКИ-КАТЕГОРИИ В МОДАЛКЕ ===== */
+        #categorySelector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
         #categorySelector .filter-btn {
-            font-size: 0.8rem;
-            padding: 4px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid transparent;
+            transition: all 0.25s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: var(--font-main);
+            white-space: nowrap;
+        }
+        #categorySelector .filter-btn i {
+            font-size: 1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        #categorySelector .filter-btn:hover {
+            background: rgba(255,255,255,0.10);
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+        #categorySelector .filter-btn:hover i {
+            opacity: 1;
+        }
+        #categorySelector .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 4px 14px rgba(84, 131, 131, 0.35);
+            transform: translateY(-2px);
+        }
+        #categorySelector .filter-btn.active i {
+            opacity: 1;
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            #categorySelector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 400px) {
+            #categorySelector {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -199,7 +259,7 @@
         <p style="color:var(--text-secondary); margin-bottom:20px;">Документооборот и нормативная база</p>
 
         <div class="doc-controls">
-            <!-- Единый блок фильтров -->
+            <!-- Фильтры категорий (основные) -->
             <div class="filter-group" id="categoryFilter">
                 <button class="filter-btn active" data-cat="all">Все</button>
                 <button class="filter-btn" data-cat="Приказы">Приказы</button>
@@ -233,21 +293,32 @@
             </div>
         </div>
 
-        <!-- Модальное окно добавления с кнопками-категориями -->
+        <!-- Модальное окно добавления с красивыми категориями -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
                 <form id="addDocForm">
                     <label>Категория:</label>
-                    <div class="filter-group" id="categorySelector">
-                        <button type="button" class="filter-btn active" data-cat="Приказы">Приказы</button>
-                        <button type="button" class="filter-btn" data-cat="Рапорты">Рапорты</button>
-                        <button type="button" class="filter-btn" data-cat="Ориентировки">Ориентировки</button>
-                        <button type="button" class="filter-btn" data-cat="Инструкции">Инструкции</button>
-                        <button type="button" class="filter-btn" data-cat="Протоколы">Протоколы</button>
-                        <button type="button" class="filter-btn" data-cat="Прочее">Прочее</button>
+                    <div id="categorySelector">
+                        <button type="button" class="filter-btn active" data-cat="Приказы">
+                            <i class="fa-solid fa-file-signature"></i> Приказы
+                        </button>
+                        <button type="button" class="filter-btn" data-cat="Рапорты">
+                            <i class="fa-solid fa-file-pen"></i> Рапорты
+                        </button>
+                        <button type="button" class="filter-btn" data-cat="Ориентировки">
+                            <i class="fa-solid fa-map-location-dot"></i> Ориентировки
+                        </button>
+                        <button type="button" class="filter-btn" data-cat="Инструкции">
+                            <i class="fa-solid fa-list-check"></i> Инструкции
+                        </button>
+                        <button type="button" class="filter-btn" data-cat="Протоколы">
+                            <i class="fa-solid fa-clock"></i> Протоколы
+                        </button>
+                        <button type="button" class="filter-btn" data-cat="Прочее">
+                            <i class="fa-solid fa-folder-open"></i> Прочее
+                        </button>
                     </div>
-                    <!-- Скрытое поле для хранения выбранной категории -->
                     <input type="hidden" id="selectedCategory" value="Приказы">
 
                     <label>Номер документа:</label>
@@ -350,7 +421,7 @@
             document.getElementById('docViewModal').style.display = 'none';
         }
 
-        // ===== ДОБАВЛЕНИЕ (с выбором категории кнопками) =====
+        // ===== ДОБАВЛЕНИЕ =====
         function openAddModal() {
             document.getElementById('addDocModal').style.display = 'flex';
             document.getElementById('addDocForm').reset();
@@ -407,7 +478,7 @@
             }
         }
 
-        // ===== ОБРАБОТКА КЛИКОВ ПО ФИЛЬТРАМ =====
+        // ===== ОБРАБОТКА ФИЛЬТРОВ =====
         document.getElementById('categoryFilter').addEventListener('click', function(e) {
             const btn = e.target.closest('.filter-btn');
             if (!btn) return;
