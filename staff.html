@@ -9,6 +9,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Кадровый состав</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для карточек штатного расписания */
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .staff-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+        .staff-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(84, 131, 131, 0.3);
+        }
+        .staff-card h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        .staff-card .count {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 6px 0;
+        }
+        .staff-card .members {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .staff-card .members span {
+            display: inline-block;
+            background: rgba(84, 131, 131, 0.15);
+            padding: 2px 12px;
+            border-radius: 20px;
+            margin: 4px 4px 0 0;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .staff-empty {
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+            padding: 40px 0;
+        }
+        @media (max-width: 600px) {
+            .staff-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -36,8 +98,10 @@
     </header>
 
     <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
-        <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">👤 Штатное расписание</h1>
-        <div id="staffContainer"></div>
+        <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:8px;">👤 Штатное расписание</h1>
+        <p style="color:var(--text-secondary); margin-bottom:24px;">Список сотрудников с группировкой по должностям</p>
+
+        <div id="staffContainer" class="staff-grid"></div>
     </main>
 
     <script src="script.js"></script>
@@ -46,6 +110,7 @@
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
         document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
         }
@@ -53,30 +118,26 @@
         function renderStaff() {
             const container = document.getElementById('staffContainer');
             const staffData = getStaffData();
+
             if (staffData.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-secondary);">Нет сотрудников.</p>';
+                container.innerHTML = '<div class="staff-empty">Нет сотрудников.</div>';
                 return;
             }
-            let html = `<table>
-                <thead>
-                    <tr>
-                        <th>Должность</th>
-                        <th>Количество</th>
-                        <th>Сотрудники</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+
+            container.innerHTML = '';
             staffData.forEach(item => {
                 const count = item.members.length;
-                const membersList = item.members.join(', ');
-                html += `<tr>
-                    <td><strong>${escapeHtml(item.position)}</strong></td>
-                    <td>${count}</td>
-                    <td>${escapeHtml(membersList)}</td>
-                </tr>`;
+                const membersList = item.members.map(m => `<span>${escapeHtml(m)}</span>`).join('');
+
+                const card = document.createElement('div');
+                card.className = 'staff-card';
+                card.innerHTML = `
+                    <h3>${escapeHtml(item.position)}</h3>
+                    <div class="count">👥 ${count} человек</div>
+                    <div class="members">${membersList}</div>
+                `;
+                container.appendChild(card);
             });
-            html += '</tbody></table>';
-            container.innerHTML = html;
         }
 
         function escapeHtml(text) {
@@ -84,6 +145,7 @@
             div.textContent = text;
             return div.innerHTML;
         }
+
         window.onload = renderStaff;
     </script>
 </body>
