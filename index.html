@@ -43,16 +43,6 @@
                 <p>Сотрудников</p>
             </div>
             <div class="stat-card">
-                <i class="fa-solid fa-comments"></i>
-                <h3 id="statTopics">0</h3>
-                <p>Тем на форуме</p>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-message"></i>
-                <h3 id="statPosts">0</h3>
-                <p>Сообщений</p>
-            </div>
-            <div class="stat-card">
                 <i class="fa-solid fa-file-pen"></i>
                 <h3 id="statReports">0</h3>
                 <p>Рапортов</p>
@@ -65,10 +55,6 @@
         </div>
 
         <div class="nav-grid">
-            <a href="forum.html" class="nav-card">
-                <i class="fa-solid fa-comments"></i>
-                <span>Форум</span>
-            </a>
             <a href="reports.html" class="nav-card">
                 <i class="fa-solid fa-file-pen"></i>
                 <span>Рапорты</span>
@@ -96,15 +82,13 @@
 
         function updateStats() {
             const users = getUsers();
-            const topics = getTopics();
-            const posts = getPosts();
             const reports = getReports();
+
             document.getElementById('statUsers').textContent = users.length;
-            document.getElementById('statTopics').textContent = topics.length;
-            document.getElementById('statPosts').textContent = posts.length;
             document.getElementById('statReports').textContent = reports.length;
+
+            // Сводка только по рапортам
             const events = [];
-            topics.forEach(t => events.push({ date: t.date, text: `📌 Новая тема: ${t.title} (${t.author})` }));
             reports.forEach(r => events.push({ date: r.date, text: `📄 Рапорт №${r.id} от ${r.author}` }));
             events.sort((a, b) => new Date(b.date) - new Date(a.date));
             const list = document.getElementById('summaryList');
