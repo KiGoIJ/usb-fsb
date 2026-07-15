@@ -147,7 +147,6 @@
             color: #ff4d4d;
         }
 
-        /* Модальное окно для просмотра документа */
         .doc-modal .modal-content {
             max-width: 600px;
         }
@@ -168,12 +167,10 @@
             border-radius: 10px;
         }
 
-        /* Кнопка добавления */
         .btn-add-doc {
             margin-left: auto;
         }
 
-        /* Форма добавления (в модалке) */
         .add-doc-form label {
             margin-top: 10px;
         }
@@ -188,6 +185,9 @@
             text-align: center;
             padding: 60px 0;
             font-style: italic;
+        }
+        .doc-card {
+            animation: fadeInUp 0.4s ease forwards;
         }
     </style>
 </head>
@@ -220,7 +220,6 @@
         <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:8px;">📂 База данных</h1>
         <p style="color:var(--text-secondary); margin-bottom:20px;">Документооборот и нормативная база</p>
 
-        <!-- Управление -->
         <div class="doc-controls">
             <div class="doc-categories" id="categoryFilter">
                 <button class="btn active" data-cat="all">Все</button>
@@ -237,7 +236,6 @@
             <button class="btn btn-add-doc" id="addDocBtn" style="display:none;" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Добавить</button>
         </div>
 
-        <!-- Сетка документов -->
         <div id="docGrid" class="doc-grid"></div>
 
         <!-- Модальное окно просмотра документа -->
@@ -256,7 +254,6 @@
             </div>
         </div>
 
-        <!-- Модальное окно добавления документа -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
@@ -272,7 +269,7 @@
                     </select>
 
                     <label>Номер документа:</label>
-                    <input type="text" id="docNumber" placeholder="Например: № 123/45" required>
+                    <input type="text" id="docNumber" placeholder="Например: № 123/45">
 
                     <label>Заголовок:</label>
                     <input type="text" id="docTitle" placeholder="Краткое название" required>
@@ -291,7 +288,7 @@
 
     <script src="script.js"></script>
     <script>
-        // ===== Инициализация пользователя =====
+        // ===== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ =====
         const callsign = localStorage.getItem('callsign') || 'Неизвестный';
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
@@ -303,11 +300,11 @@
             document.getElementById('addDocBtn').style.display = 'inline-flex';
         }
 
-        // ===== Переменные состояния =====
+        // ===== ПЕРЕМЕННЫЕ СОСТОЯНИЯ =====
         let currentCategory = 'all';
         let currentSearch = '';
 
-        // ===== Рендеринг документов =====
+        // ===== РЕНДЕРИНГ ДОКУМЕНТОВ =====
         function renderDocuments() {
             const docs = getDocuments();
             const search = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -356,7 +353,7 @@
             });
         }
 
-        // ===== Просмотр документа =====
+        // ===== ПРОСМОТР ДОКУМЕНТА =====
         function openDocView(docId) {
             const docs = getDocuments();
             const doc = docs.find(d => d.id === docId);
@@ -374,7 +371,7 @@
             document.getElementById('docViewModal').style.display = 'none';
         }
 
-        // ===== Добавление документа =====
+        // ===== ДОБАВЛЕНИЕ ДОКУМЕНТА =====
         function openAddModal() {
             document.getElementById('addDocModal').style.display = 'flex';
             document.getElementById('addDocForm').reset();
@@ -410,7 +407,7 @@
             renderDocuments();
         });
 
-        // ===== Удаление документа =====
+        // ===== УДАЛЕНИЕ ДОКУМЕНТА =====
         function deleteDoc(docId) {
             if (confirm('Удалить документ?')) {
                 deleteDocument(docId);
@@ -418,7 +415,7 @@
             }
         }
 
-        // ===== Обработка кликов по категориям =====
+        // ===== ОБРАБОТКА КЛИКОВ ПО КАТЕГОРИЯМ =====
         document.getElementById('categoryFilter').addEventListener('click', function(e) {
             const btn = e.target.closest('.btn');
             if (!btn) return;
@@ -428,7 +425,7 @@
             renderDocuments();
         });
 
-        // ===== Закрытие модалок по клику вне их =====
+        // ===== ЗАКРЫТИЕ МОДАЛОК ПО КЛИКУ ВНЕ =====
         document.getElementById('docViewModal').addEventListener('click', function(e) {
             if (e.target === this) closeDocView();
         });
@@ -436,14 +433,14 @@
             if (e.target === this) closeAddModal();
         });
 
-        // ===== Вспомогательная функция =====
+        // ===== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ =====
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // ===== Загрузка =====
+        // ===== ЗАГРУЗКА =====
         window.onload = function() {
             renderDocuments();
         };
