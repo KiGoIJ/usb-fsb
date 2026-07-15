@@ -9,6 +9,165 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Законодательство</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Стили для страницы законодательства */
+        .legislation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+        .legislation-search {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .legislation-search input {
+            margin: 0;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 10px 18px 10px 44px;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .legislation-search input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(84, 131, 131, 0.2);
+            background: rgba(255,255,255,0.10);
+        }
+        .legislation-search .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        .legislation-search input::placeholder {
+            color: var(--text-dim);
+        }
+        .legislation-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .legislation-filters .btn {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            box-shadow: none;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+        .legislation-filters .btn:hover {
+            background: rgba(255,255,255,0.12);
+        }
+        .legislation-filters .btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .legislation-stats {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .legislation-stats strong {
+            color: var(--text-primary);
+        }
+        .legislation-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .legislation-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+        .legislation-card:hover {
+            border-color: rgba(84, 131, 131, 0.3);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+        .legislation-card .doc-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px 16px;
+            margin-bottom: 6px;
+        }
+        .legislation-card .doc-code {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: rgba(84, 131, 131, 0.15);
+            padding: 2px 12px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .legislation-card .doc-number {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        .legislation-card .doc-title {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .legislation-card .doc-text {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin: 8px 0 4px;
+        }
+        .legislation-card .doc-sanction {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .legislation-card .doc-sanction strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .empty-legislation {
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 60px 0;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .legislation-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .legislation-filters {
+                justify-content: center;
+            }
+        }
+        @media (max-width: 480px) {
+            .legislation-card {
+                padding: 16px;
+            }
+            .legislation-card .doc-header {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -36,79 +195,227 @@
     </header>
 
     <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
-        <h1 style="color:var(--text-primary); font-weight:700; font-size:2rem; letter-spacing:-0.02em;">⚖️ Поиск по законодательству</h1>
-        <div style="display:flex; flex-wrap:wrap; gap:15px; margin:20px 0;">
-            <input type="text" id="searchInput" placeholder="Введите номер или ключевое слово..." style="flex:1; min-width:200px;">
-            <select id="codeFilter">
-                <option value="all">Все кодексы</option>
-                <option value="УК РФ">УК РФ</option>
-                <option value="КоАП РФ">КоАП РФ</option>
-                <option value="УПК РФ">УПК РФ</option>
-            </select>
-            <button class="btn" onclick="searchLegislation()"><i class="fa-solid fa-search"></i> Найти</button>
+        <h1 style="color:var(--text-primary); font-weight:700; font-size:2rem; letter-spacing:-0.02em;">⚖️ Собрание законодательства</h1>
+        <p style="color:var(--text-secondary); margin-bottom:20px;">Полная база статей УК РФ, КоАП РФ, ПДД, ФЗ о ФСБ и других нормативных актов</p>
+
+        <!-- Управление -->
+        <div class="legislation-controls">
+            <div class="legislation-search">
+                <i class="fa-solid fa-search search-icon"></i>
+                <input type="text" id="legislationSearch" placeholder="Поиск по статьям — номер, заголовок, текст..." oninput="renderLegislation()">
+            </div>
+            <div class="legislation-filters" id="codeFilter">
+                <button class="btn active" data-code="all">Все</button>
+                <button class="btn" data-code="УК РФ">УК РФ</button>
+                <button class="btn" data-code="КоАП РФ">КоАП РФ</button>
+                <button class="btn" data-code="ПДД">ПДД</button>
+                <button class="btn" data-code="ФЗ о ФСБ">ФЗ о ФСБ</button>
+            </div>
         </div>
-        <div id="results" style="margin-top:20px;"></div>
+
+        <!-- Статистика -->
+        <div class="legislation-stats" id="legislationStats">Найдено: <strong>0</strong> статей</div>
+
+        <!-- Результаты -->
+        <div id="legislationResults" class="legislation-grid"></div>
     </main>
 
     <script src="script.js"></script>
     <script>
+        // ===== ПОЛНАЯ БАЗА СТАТЕЙ (с сайта https://fsb.mirmiryot.workers.dev/) =====
+        const legislationArticles = [
+            // ===== УК РФ =====
+            { code: 'УК РФ', number: 'Ст. 105', title: 'Убийство', text: 'Умышленное причинение смерти другому человеку.', sanction: 'Лишение свободы 6–15 лет; при отягчающих — 8–20 лет либо пожизненно.' },
+            { code: 'УК РФ', number: 'Ст. 106', title: 'Убийство матерью новорождённого', text: 'Убийство матерью своего новорождённого ребёнка.', sanction: 'Лишение свободы до 5 лет.' },
+            { code: 'УК РФ', number: 'Ст. 107', title: 'Убийство в состоянии аффекта', text: 'Убийство в состоянии внезапного сильного душевного волнения.', sanction: 'Лишение свободы до 3 лет.' },
+            { code: 'УК РФ', number: 'Ст. 108', title: 'Убийство при превышении пределов необходимой обороны', text: 'Убийство при превышении пределов необходимой обороны либо мер задержания.', sanction: 'Лишение свободы до 2 лет; при превышении мер задержания — до 3 лет.' },
+            { code: 'УК РФ', number: 'Ст. 109', title: 'Причинение смерти по неосторожности', text: 'Причинение смерти по неосторожности.', sanction: 'Исправительные работы до 2 лет либо лишение свободы до 2 лет; при ненадлежащем исполнении обязанностей — до 4 лет.' },
+            { code: 'УК РФ', number: 'Ст. 111', title: 'Умышленное причинение тяжкого вреда здоровью', text: 'Умышленное причинение тяжкого вреда здоровью, опасного для жизни.', sanction: 'Лишение свободы до 8 лет; при отягчающих — до 12 лет.' },
+            { code: 'УК РФ', number: 'Ст. 112', title: 'Умышленное причинение средней тяжести вреда здоровью', text: 'Умышленное причинение средней тяжести вреда здоровью, не опасного для жизни.', sanction: 'Лишение свободы до 3 лет; при отягчающих — до 5 лет.' },
+            { code: 'УК РФ', number: 'Ст. 115', title: 'Умышленное причинение лёгкого вреда здоровью', text: 'Умышленное причинение лёгкого вреда здоровью, вызвавшего кратковременное расстройство.', sanction: 'Штраф до 40 тыс. руб. либо обязательные работы до 480 ч, либо арест до 4 мес.' },
+            { code: 'УК РФ', number: 'Ст. 116', title: 'Побои', text: 'Побои, причинившие физическую боль, но не повлёкшие последствий.', sanction: 'Штраф до 40 тыс. руб. либо обязательные работы до 360 ч, либо арест до 3 мес.' },
+            { code: 'УК РФ', number: 'Ст. 119', title: 'Угроза убийством', text: 'Угроза убийством или причинением тяжкого вреда здоровью.', sanction: 'Обязательные работы до 480 ч, либо ограничение свободы до 2 лет, либо арест до 6 мес.' },
+            { code: 'УК РФ', number: 'Ст. 126', title: 'Похищение человека', text: 'Похищение человека.', sanction: 'Лишение свободы до 5 лет; при отягчающих — до 12 лет.' },
+            { code: 'УК РФ', number: 'Ст. 127', title: 'Незаконное лишение свободы', text: 'Незаконное лишение свободы, не связанное с похищением.', sanction: 'Ограничение свободы до 2 лет либо лишение свободы до 2 лет; при отягчающих — до 5 лет.' },
+            { code: 'УК РФ', number: 'Ст. 131', title: 'Изнасилование', text: 'Половое сношение с применением насилия или угрозой насилия.', sanction: 'Лишение свободы 3–6 лет; при отягчающих — 4–10 лет или до 20 лет.' },
+            { code: 'УК РФ', number: 'Ст. 158', title: 'Кража', text: 'Тайное хищение чужого имущества.', sanction: 'Штраф до 80 тыс. руб. либо обязательные работы до 360 ч, либо лишение свободы до 2 лет; при отягчающих — до 10 лет.' },
+            { code: 'УК РФ', number: 'Ст. 159', title: 'Мошенничество', text: 'Хищение чужого имущества или приобретение права на имущество путём обмана.', sanction: 'Штраф до 120 тыс. руб. либо лишение свободы до 2 лет; при отягчающих — до 10 лет.' },
+            { code: 'УК РФ', number: 'Ст. 160', title: 'Присвоение и растрата', text: 'Хищение чужого имущества, вверенного виновному.', sanction: 'Штраф до 120 тыс. руб. либо лишение свободы до 2 лет; при отягчающих — до 10 лет.' },
+            { code: 'УК РФ', number: 'Ст. 161', title: 'Грабёж', text: 'Открытое хищение чужого имущества.', sanction: 'Обязательные работы до 480 ч, либо лишение свободы до 4 лет; при отягчающих — до 12 лет.' },
+            { code: 'УК РФ', number: 'Ст. 162', title: 'Разбой', text: 'Нападение с целью хищения чужого имущества, совершённое с применением насилия, опасного для жизни.', sanction: 'Лишение свободы до 8 лет; при отягчающих — до 15 лет.' },
+            { code: 'УК РФ', number: 'Ст. 163', title: 'Вымогательство', text: 'Требование передачи чужого имущества под угрозой насилия или распространения сведений.', sanction: 'Ограничение свободы до 3 лет либо лишение свободы до 4 лет; при отягчающих — до 15 лет.' },
+            { code: 'УК РФ', number: 'Ст. 166', title: 'Неправомерное завладение автомобилем', text: 'Неправомерное завладение автомобилем или иным ТС без цели хищения (угон).', sanction: 'Штраф до 120 тыс. руб. либо лишение свободы до 5 лет; при отягчающих — до 12 лет.' },
+            { code: 'УК РФ', number: 'Ст. 167', title: 'Умышленные уничтожение или повреждение имущества', text: 'Умышленные уничтожение или повреждение чужого имущества.', sanction: 'Штраф до 40 тыс. руб. либо лишение свободы до 2 лет; при отягчающих — до 5 лет.' },
+            { code: 'УК РФ', number: 'Ст. 222', title: 'Незаконный оборот оружия', text: 'Незаконные приобретение, передача, сбыт, хранение, перевозка оружия, боеприпасов.', sanction: 'Ограничение свободы до 3 лет либо лишение свободы до 4 лет; при отягчающих — до 8 лет.' },
+            { code: 'УК РФ', number: 'Ст. 228', title: 'Незаконный оборот наркотиков', text: 'Незаконные приобретение, хранение, перевозка, изготовление наркотиков без цели сбыта.', sanction: 'Штраф до 40 тыс. руб. либо лишение свободы до 3 лет; при отягчающих — до 20 лет.' },
+            { code: 'УК РФ', number: 'Ст. 264', title: 'Нарушение ПДД, повлёкшее тяжкие последствия', text: 'Нарушение ПДД лицом, управляющим ТС, повлёкшее смерть или тяжкий вред здоровью.', sanction: 'Ограничение свободы до 3 лет либо лишение свободы до 5 лет; при смерти двух лиц — до 7 лет.' },
+            { code: 'УК РФ', number: 'Ст. 290', title: 'Получение взятки', text: 'Получение взятки должностным лицом за действия (бездействие) в пользу взяткодателя.', sanction: 'Штраф до 1 млн руб. либо лишение свободы до 5 лет; при отягчающих — до 15 лет.' },
+            { code: 'УК РФ', number: 'Ст. 291', title: 'Дача взятки', text: 'Дача взятки должностному лицу лично или через посредника.', sanction: 'Штраф либо лишение свободы до 8 лет; при отягчающих — до 15 лет.' },
+            { code: 'УК РФ', number: 'Ст. 291.1', title: 'Посредничество во взяточничестве', text: 'Непосредственная передача взятки по поручению взяткодателя или взяткополучателя.', sanction: 'Штраф либо лишение свободы до 4 лет; при отягчающих — до 12 лет.' },
+            { code: 'УК РФ', number: 'Ст. 292', title: 'Служебный подлог', text: 'Внесение должностным лицом в документы заведомо ложных сведений.', sanction: 'Штраф либо лишение свободы до 2 лет.' },
+            { code: 'УК РФ', number: 'Ст. 293', title: 'Халатность', text: 'Неисполнение обязанностей вследствие недобросовестного отношения к службе.', sanction: 'Штраф либо исправительные работы; при тяжких последствиях — лишение свободы до 7 лет.' },
+            { code: 'УК РФ', number: 'Ст. 294', title: 'Воспрепятствование правосудию', text: 'Вмешательство в деятельность суда или следствия.', sanction: 'Штраф либо лишение свободы до 4 лет.' },
+            { code: 'УК РФ', number: 'Ст. 295', title: 'Посягательство на жизнь лица, ведущего правосудие', text: 'Посягательство на жизнь судьи, следователя, дознавателя.', sanction: 'Лишение свободы 12–20 лет либо пожизненно.' },
+            { code: 'УК РФ', number: 'Ст. 296', title: 'Угроза в связи с правосудием', text: 'Угроза убийством или насилием в отношении судьи или следователя.', sanction: 'Штраф либо лишение свободы до 5 лет.' },
+            { code: 'УК РФ', number: 'Ст. 297', title: 'Неуважение к суду', text: 'Оскорбление участников судебного разбирательства или судьи.', sanction: 'Штраф либо арест до 4 месяцев.' },
+            { code: 'УК РФ', number: 'Ст. 298', title: 'Клевета в отношении судьи', text: 'Клевета в отношении судьи, следователя или дознавателя.', sanction: 'Штраф либо обязательные работы.' },
+            { code: 'УК РФ', number: 'Ст. 306', title: 'Заведомо ложный донос', text: 'Заведомо ложный донос о совершении преступления.', sanction: 'Штраф либо лишение свободы до 2 лет; при обвинении в тяжком — до 6 лет.' },
+            { code: 'УК РФ', number: 'Ст. 307', title: 'Заведомо ложные показания', text: 'Заведомо ложные показания свидетеля, потерпевшего или заключение эксперта.', sanction: 'Штраф либо арест до 3 месяцев.' },
+            { code: 'УК РФ', number: 'Ст. 309', title: 'Подкуп или принуждение к показаниям', text: 'Подкуп или принуждение свидетеля к даче ложных показаний.', sanction: 'Штраф либо лишение свободы до 7 лет.' },
+            { code: 'УК РФ', number: 'Ст. 313', title: 'Побег из-под стражи', text: 'Побег из места лишения свободы или из-под ареста.', sanction: 'Лишение свободы до 4 лет; при отягчающих — до 8 лет.' },
+            { code: 'УК РФ', number: 'Ст. 317', title: 'Посягательство на жизнь сотрудника правоохранительного органа', text: 'Посягательство на жизнь сотрудника правоохранительного органа в связи со службой.', sanction: 'Лишение свободы 12–20 лет либо пожизненно. Подследственно ФСБ (в части своих сотрудников).' },
+            { code: 'УК РФ', number: 'Ст. 318', title: 'Применение насилия к представителю власти', text: 'Применение насилия в отношении представителя власти в связи с обязанностями.', sanction: 'Штраф до 40 тыс. руб. либо арест до 6 мес.; при опасном насилии — лишение свободы до 10 лет.' },
+            { code: 'УК РФ', number: 'Ст. 319', title: 'Оскорбление представителя власти', text: 'Оскорбление представителя власти при исполнении обязанностей.', sanction: 'Штраф до 40 тыс. руб. либо обязательные работы до 360 ч.' },
+            { code: 'УК РФ', number: 'Ст. 327', title: 'Подделка документов', text: 'Подделка удостоверения или иного документа, предоставляющего права.', sanction: 'Ограничение свободы до 3 лет либо лишение свободы до 2 лет.' },
+
+            // ===== КоАП РФ =====
+            { code: 'КоАП РФ', number: 'Ст. 12.8', title: 'Управление ТС в состоянии опьянения', text: 'Управление транспортным средством в состоянии алкогольного или наркотического опьянения.', sanction: 'Штраф 45 000 ₽ и лишение прав 1,5–2 года.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.9', title: 'Превышение скорости', text: 'Превышение установленной скорости движения.', sanction: 'Штраф 500–5 000 ₽, при повторном — лишение прав до 1 года.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.12', title: 'Проезд на запрещающий сигнал', text: 'Проезд на красный сигнал светофора или жест регулировщика.', sanction: 'Штраф 1 000 ₽, при повторном — 5 000 ₽ или лишение прав до 6 мес.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.15', title: 'Выезд на встречную полосу', text: 'Выезд на встречную полосу в нарушение ПДД.', sanction: 'Штраф 5 000 ₽ либо лишение прав 4–6 мес.; при повторном — 1 год.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.19', title: 'Нарушение правил остановки и стоянки', text: 'Нарушение правил остановки или стоянки транспортных средств.', sanction: 'Предупреждение либо штраф 500–3 000 ₽.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.24', title: 'Причинение вреда здоровью при ДТП', text: 'Нарушение ПДД, повлёкшее лёгкий или средний вред здоровью.', sanction: 'Штраф 2 500–25 000 ₽ либо лишение прав до 2 лет.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.26', title: 'Отказ от медосвидетельствования', text: 'Невыполнение законного требования о прохождении медосвидетельствования.', sanction: 'Штраф 45 000 ₽ и лишение прав 1,5–2 года.' },
+            { code: 'КоАП РФ', number: 'Ст. 12.27', title: 'Оставление места ДТП', text: 'Невыполнение обязанностей при ДТП либо оставление места происшествия.', sanction: 'Лишение прав 1–1,5 года либо арест до 15 суток.' },
+            { code: 'КоАП РФ', number: 'Ст. 19.3', title: 'Неповиновение сотруднику', text: 'Неповиновение законному распоряжению сотрудника полиции, ФСБ или Росгвардии.', sanction: 'Штраф 2 000–4 000 ₽, арест до 15 суток либо обязательные работы.' },
+            { code: 'КоАП РФ', number: 'Ст. 19.15', title: 'Проживание без паспорта', text: 'Проживание без документа, удостоверяющего личность, или без регистрации.', sanction: 'Штраф 2 000–3 000 ₽.' },
+            { code: 'КоАП РФ', number: 'Ст. 19.20', title: 'Деятельность без лицензии', text: 'Осуществление деятельности без специального разрешения (лицензии).', sanction: 'Штраф на граждан 500–1 500 ₽; на юрлиц — до 250 000 ₽.' },
+            { code: 'КоАП РФ', number: 'Ст. 20.1', title: 'Мелкое хулиганство', text: 'Нарушение общественного порядка с нецензурной бранью и приставанием к гражданам.', sanction: 'Штраф 500–1 000 ₽ либо арест до 15 суток.' },
+            { code: 'КоАП РФ', number: 'Ст. 20.8', title: 'Нарушение правил оборота оружия', text: 'Нарушение правил хранения, ношения или уничтожения оружия и патронов.', sanction: 'Штраф 500–5 000 ₽ либо лишение права на оружие.' },
+            { code: 'КоАП РФ', number: 'Ст. 20.13', title: 'Стрельба в неотведённых местах', text: 'Стрельба из оружия в населённых пунктах или иных не отведённых местах.', sanction: 'Штраф 40 000–50 000 ₽ с конфискацией и лишением права на оружие.' },
+            { code: 'КоАП РФ', number: 'Ст. 20.20', title: 'Распитие алкоголя в общественных местах', text: 'Потребление алкоголя или наркотиков в запрещённых общественных местах.', sanction: 'Штраф 500–1 500 ₽.' },
+            { code: 'КоАП РФ', number: 'Ст. 20.21', title: 'Появление в пьяном виде', text: 'Появление в общественных местах в состоянии опьянения, оскорбляющем достоинство.', sanction: 'Штраф 500–1 500 ₽ либо арест до 15 суток.' },
+            { code: 'КоАП РФ', number: 'Ст. 20.25', title: 'Неуплата административного штрафа', text: 'Неуплата штрафа в срок либо уклонение от обязательных работ.', sanction: 'Штраф в двукратном размере, арест до 15 суток либо обязательные работы.' },
+
+            // ===== ПДД =====
+            { code: 'ПДД', number: 'Ст. 1', title: 'Общие положения', text: 'Термины, обозначения и общие условия применения Правил дорожного движения.', sanction: '—' },
+            { code: 'ПДД', number: 'Ст. 2', title: 'Общие обязанности водителей', text: 'Иметь документы, проверять исправность ТС, действия при ДТП, требования к состоянию водителя.', sanction: 'Нарушение — ст. 12.3, 12.5, 12.27 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 2.7', title: 'Запреты для водителя', text: 'Запрет управления в состоянии опьянения, усталости, под воздействием лекарств; запрет пользования телефоном.', sanction: 'Ст. 12.8, 12.36.1 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 3', title: 'Применение спецсигналов', text: 'Порядок использования проблесковых маячков и звуковых сигналов, предоставление преимущества.', sanction: 'Ст. 12.17 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 4', title: 'Обязанности пешеходов', text: 'Движение по тротуарам, переход дороги по переходам и на разрешающий сигнал.', sanction: 'Ст. 12.29, 12.30 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 5', title: 'Обязанности пассажиров', text: 'Пристёгиваться ремнём, посадка и высадка со стороны тротуара.', sanction: 'Ст. 12.29 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 6', title: 'Сигналы светофора и регулировщика', text: 'Значение сигналов светофора и жестов регулировщика; приоритет регулировщика.', sanction: 'Ст. 12.12, 12.13 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 7', title: 'Аварийная сигнализация и знак аварийной остановки', text: 'Случаи включения аварийки и выставления знака аварийной остановки.', sanction: 'Ст. 12.20 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 8', title: 'Начало движения, маневрирование', text: 'Подача сигналов поворота, перестроение, повороты и развороты, уступание дороги.', sanction: 'Ст. 12.14 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 9', title: 'Расположение ТС на проезжей части', text: 'Число полос, движение по полосам, запрет выезда на встречную.', sanction: 'Ст. 12.15, 12.16 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 10', title: 'Скорость движения', text: 'Ограничения скорости в населённых пунктах и вне их, выбор безопасной скорости.', sanction: 'Ст. 12.9 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 11', title: 'Обгон, опережение, встречный разъезд', text: 'Правила обгона, случаи запрета обгона, встречный разъезд.', sanction: 'Ст. 12.15 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 12', title: 'Остановка и стоянка', text: 'Правила остановки и стоянки, места запрета, стоянка в тёмное время.', sanction: 'Ст. 12.19 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 13', title: 'Проезд перекрёстков', text: 'Регулируемые и нерегулируемые перекрёстки, приоритет, круговое движение.', sanction: 'Ст. 12.13 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 14', title: 'Пешеходные переходы', text: 'Обязанность уступать пешеходам, остановка перед переходом.', sanction: 'Ст. 12.18 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 15', title: 'Движение через ж/д пути', text: 'Пересечение ж/д переездов, запреты, действия при вынужденной остановке.', sanction: 'Ст. 12.10 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 16', title: 'Движение по автомагистралям', text: 'Запреты на автомагистралях, ограничения по типам ТС и остановкам.', sanction: 'Ст. 12.11 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 17', title: 'Движение в жилых зонах', text: 'Приоритет пешеходов, ограничение скорости 20 км/ч, запрет сквозного движения.', sanction: 'Ст. 12.28 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 18', title: 'Приоритет маршрутных ТС', text: 'Полосы для маршрутных ТС, предоставление преимущества при отъезде от остановки.', sanction: 'Ст. 12.17 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 19', title: 'Пользование внешними световыми приборами', text: 'Ближний и дальний свет, ПТФ, использование фар в тёмное время и тоннелях.', sanction: 'Ст. 12.20 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 20', title: 'Буксировка механических ТС', text: 'Правила буксировки на гибкой и жёсткой сцепке, ограничения.', sanction: 'Ст. 12.21 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 21', title: 'Учебная езда', text: 'Условия обучения вождению, требования к инструктору и учебному ТС.', sanction: 'Ст. 12.22 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 22', title: 'Перевозка людей', text: 'Правила перевозки пассажиров, требования к перевозке детей.', sanction: 'Ст. 12.23 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 23', title: 'Перевозка грузов', text: 'Требования к размещению и обозначению груза, ограничения габаритов и массы.', sanction: 'Ст. 12.21.1 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 24', title: 'Дополнительные требования к велосипедистам', text: 'Движение велосипедистов, возрастные ограничения, запреты.', sanction: 'Ст. 12.29 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 25', title: 'Движение гужевых повозок и прогон животных', text: 'Правила движения гужевого транспорта и прогона скота.', sanction: 'Ст. 12.29 КоАП.' },
+            { code: 'ПДД', number: 'Ст. 26', title: 'Учебная и иная деятельность на дорогах', text: 'Условия проведения работ, использование опознавательных знаков.', sanction: '—' },
+
+            // ===== ФЗ о ФСБ =====
+            { code: 'ФЗ о ФСБ', number: 'Ст. 1', title: 'Федеральная служба безопасности', text: 'ФСБ — единая централизованная система органов, обеспечивающих безопасность РФ.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 2', title: 'Органы федеральной службы безопасности', text: 'Структура органов ФСБ: центральный аппарат, территориальные органы, органы в войсках, пограничные органы.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 3', title: 'Правовая основа деятельности', text: 'Конституция, федеральные законы и иные нормативные акты, регулирующие деятельность ФСБ.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 5', title: 'Принципы деятельности', text: 'Законность, уважение прав человека, гуманизм, конспирация, сочетание гласных и негласных методов.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 6', title: 'Обязанность соблюдения прав и свобод', text: 'Недопустимость ограничения прав и свобод, кроме случаев, предусмотренных законом.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 8', title: 'Направления деятельности', text: 'Контрразведка, борьба с терроризмом, разведка, погранслужба, обеспечение инфобезопасности, борьба с преступностью.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 9', title: 'Контрразведывательная деятельность', text: 'Выявление, предупреждение и пресечение разведывательной деятельности иностранных спецслужб.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 9.1', title: 'Борьба с терроризмом', text: 'Деятельность по выявлению, предупреждению, пресечению и раскрытию террористических актов.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 10', title: 'Борьба с преступностью', text: 'Оперативно-разыскные мероприятия по раскрытию преступлений, отнесённых к ведению ФСБ.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 11', title: 'Разведывательная деятельность', text: 'Разведывательная деятельность в интересах безопасности личности, общества и государства.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 11.1', title: 'Пограничная деятельность', text: 'Защита и охрана Государственной границы, охрана внутренних вод и исключительной экономической зоны.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 11.2', title: 'Обеспечение информационной безопасности', text: 'Формирование и реализация госполитики в области защиты информации и криптографии.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 12', title: 'Обязанности органов ФСБ', text: 'Информирование руководства государства об угрозах, выявление и пресечение шпионажа и терроризма, защита сведений.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 13', title: 'Права органов ФСБ', text: 'Проведение ОРМ, проверка документов, задержание, вход в жилые помещения при пресечении преступлений, ведение учётов.', sanction: '—' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 13.1', title: 'Официальное предостережение', text: 'Право объявлять физлицу официальное предостережение о недопустимости действий, создающих условия для преступлений.', sanction: 'Невыполнение — административная ответственность.' },
+            { code: 'ФЗ о ФСБ', number: 'Ст. 14', title: 'Обязанность оказания содействия', text: 'Госорганы, организации и лица обязаны оказывать содействие органам ФСБ.', sanction: '—' }
+        ];
+
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
         const callsign = localStorage.getItem('callsign') || 'Неизвестный';
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
         document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
         }
 
-        function searchLegislation() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            const codeFilter = document.getElementById('codeFilter').value;
-            const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '';
-            const articles = getLegislationArticles();
-            let filtered = articles;
+        // ===== ПЕРЕМЕННЫЕ СОСТОЯНИЯ =====
+        let currentCodeFilter = 'all';
+
+        // ===== ОСНОВНАЯ ФУНКЦИЯ РЕНДЕРИНГА (ПОИСК В РЕАЛЬНОМ ВРЕМЕНИ) =====
+        function renderLegislation() {
+            const searchQuery = document.getElementById('legislationSearch').value.trim().toLowerCase();
+            const codeFilter = currentCodeFilter;
+
+            let filtered = legislationArticles;
+
+            // Фильтр по кодексу
             if (codeFilter !== 'all') {
                 filtered = filtered.filter(a => a.code === codeFilter);
             }
-            if (query) {
+
+            // Фильтр по поисковому запросу (номер, заголовок, текст)
+            if (searchQuery) {
                 filtered = filtered.filter(a =>
-                    a.number.toLowerCase().includes(query) ||
-                    a.title.toLowerCase().includes(query) ||
-                    a.text.toLowerCase().includes(query)
+                    a.number.toLowerCase().includes(searchQuery) ||
+                    a.title.toLowerCase().includes(searchQuery) ||
+                    a.text.toLowerCase().includes(searchQuery)
                 );
             }
+
+            // Обновляем счётчик
+            document.getElementById('legislationStats').innerHTML = `Найдено: <strong>${filtered.length}</strong> статей`;
+
+            // Рендерим результаты
+            const container = document.getElementById('legislationResults');
             if (filtered.length === 0) {
-                resultsContainer.innerHTML = '<p style="color:var(--text-secondary);">Ничего не найдено</p>';
+                container.innerHTML = '<div class="empty-legislation">Ничего не найдено по вашему запросу</div>';
                 return;
             }
+
+            container.innerHTML = '';
             filtered.forEach(a => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.style.marginBottom = '15px';
-                div.innerHTML = `
-                    <h3 style="color:var(--accent);">${a.code} ${a.number} — ${a.title}</h3>
-                    <p style="margin:10px 0; color:var(--text-secondary);">${a.text}</p>
-                    <p><strong style="color:var(--text-primary);">Санкция:</strong> <span style="color:var(--text-secondary);">${a.sanction}</span></p>
+                const card = document.createElement('div');
+                card.className = 'legislation-card';
+                card.innerHTML = `
+                    <div class="doc-header">
+                        <span class="doc-code">${escapeHtml(a.code)}</span>
+                        <span class="doc-number">${escapeHtml(a.number)}</span>
+                        <span class="doc-title">— ${escapeHtml(a.title)}</span>
+                    </div>
+                    <div class="doc-text">${escapeHtml(a.text)}</div>
+                    <div class="doc-sanction"><strong>Санкция / применение:</strong> ${escapeHtml(a.sanction)}</div>
                 `;
-                resultsContainer.appendChild(div);
+                container.appendChild(card);
             });
         }
 
+        // ===== ОБРАБОТКА КЛИКОВ ПО ФИЛЬТРАМ =====
+        document.getElementById('codeFilter').addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn');
+            if (!btn) return;
+            this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCodeFilter = btn.dataset.code;
+            renderLegislation();
+        });
+
+        // ===== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ =====
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ===== ЗАГРУЗКА =====
         window.onload = function() {
-            const articles = getLegislationArticles();
-            const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '';
-            articles.forEach(a => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.style.marginBottom = '15px';
-                div.innerHTML = `
-                    <h3 style="color:var(--accent);">${a.code} ${a.number} — ${a.title}</h3>
-                    <p style="margin:10px 0; color:var(--text-secondary);">${a.text}</p>
-                    <p><strong style="color:var(--text-primary);">Санкция:</strong> <span style="color:var(--text-secondary);">${a.sanction}</span></p>
-                `;
-                resultsContainer.appendChild(div);
-            });
+            renderLegislation();
         };
     </script>
 </body>
