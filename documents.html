@@ -18,7 +18,7 @@
             gap: 12px;
             margin-bottom: 24px;
             overflow-x: auto;
-            padding-bottom: 4px; /* для скролла */
+            padding-bottom: 4px;
         }
         .doc-controls .filter-group {
             flex: 0 0 auto;
@@ -36,9 +36,31 @@
             overflow-x: auto;
         }
         .doc-controls .filter-group .filter-btn {
-            padding: 4px 12px;
+            height: 36px;
+            padding: 0 14px;
             font-size: 0.8rem;
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-main);
+            font-weight: 500;
+        }
+        .doc-controls .filter-group .filter-btn:hover {
+            background: rgba(255,255,255,0.10);
+            color: var(--text-primary);
+        }
+        .doc-controls .filter-group .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(84, 131, 131, 0.3);
         }
         .doc-search {
             flex: 1 1 200px;
@@ -49,11 +71,12 @@
             background: rgba(255,255,255,0.06);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 6px 16px;
+            padding: 0 16px;
             color: var(--text-primary);
             width: 100%;
             height: 36px;
             font-size: 0.9rem;
+            transition: var(--transition);
         }
         .doc-search input:focus {
             border-color: var(--accent);
@@ -67,6 +90,9 @@
             padding: 0 20px;
             font-size: 0.85rem;
             border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* ===== Карточки документов ===== */
@@ -350,7 +376,7 @@
             </div>
         </div>
 
-        <!-- Модалка добавления с красивыми категориями -->
+        <!-- Модалка добавления -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
@@ -482,7 +508,6 @@
         function openAddModal() {
             document.getElementById('addDocModal').style.display = 'flex';
             document.getElementById('addDocForm').reset();
-            // Сбрасываем выбор категории на первую (Приказы)
             const btns = document.querySelectorAll('#categorySelector .filter-btn');
             btns.forEach((b, i) => {
                 b.classList.toggle('active', i === 0);
@@ -493,7 +518,6 @@
             document.getElementById('addDocModal').style.display = 'none';
         }
 
-        // Обработчик выбора категории (клик по кнопкам)
         document.getElementById('categorySelector').addEventListener('click', function(e) {
             const btn = e.target.closest('.filter-btn');
             if (!btn) return;
@@ -502,7 +526,6 @@
             document.getElementById('selectedCategory').value = btn.dataset.cat;
         });
 
-        // Отправка формы добавления
         document.getElementById('addDocForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const category = document.getElementById('selectedCategory').value;
@@ -535,7 +558,7 @@
             }
         }
 
-        // ===== ОБРАБОТКА ФИЛЬТРОВ =====
+        // ===== ФИЛЬТРЫ =====
         document.getElementById('categoryFilter').addEventListener('click', function(e) {
             const btn = e.target.closest('.filter-btn');
             if (!btn) return;
