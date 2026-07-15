@@ -5,10 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Консоль управления</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 32px;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .modal-content h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        .modal-content label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: block;
+            margin: 12px 0 4px;
+        }
+        .modal-content input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 10px;
+            width: 100%;
+            font-family: var(--font-main);
+        }
+        .modal-content input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(84, 131, 131, 0.2);
+        }
+        .modal-content .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+        .modal-content .btn-group button {
+            padding: 10px 24px;
+        }
+        .console-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .console-tabs .btn {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            box-shadow: none;
+            border: 1px solid transparent;
+        }
+        .console-tabs .btn:hover {
+            background: rgba(255,255,255,0.12);
+        }
+        .console-tabs .btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -22,6 +110,11 @@
             <span>Консоль администратора</span>
         </div>
         <div>
+            <span style="margin-right:16px; color:var(--text-dim);">
+                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
+                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+                <span id="positionDisplay" style="color:var(--text-secondary); font-weight:400; margin-left:8px; font-size:0.85rem;"></span>
+            </span>
             <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
             <a href="#" onclick="logout()" style="margin-left:12px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
@@ -30,30 +123,24 @@
     <main style="padding: 30px 20px; max-width: 1200px; margin:0 auto;">
         <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">🛠️ Панель управления</h1>
 
-        <!-- Вкладки -->
         <div class="console-tabs">
             <button class="btn active" data-tab="users" onclick="showTab('users')">Пользователи</button>
             <button class="btn" data-tab="topics" onclick="showTab('topics')">Темы</button>
             <button class="btn" data-tab="reports" onclick="showTab('reports')">Рапорты</button>
         </div>
 
-        <!-- Вкладка: Пользователи -->
         <div id="tabUsers" class="tab-content active">
             <div class="card">
                 <h2 style="color:var(--text-primary); margin-bottom:16px;">👥 Управление пользователями</h2>
                 <div class="table-wrap" id="usersList"></div>
             </div>
         </div>
-
-        <!-- Вкладка: Темы -->
         <div id="tabTopics" class="tab-content">
             <div class="card">
                 <h2 style="color:var(--text-primary); margin-bottom:16px;">📋 Управление темами</h2>
                 <div class="table-wrap" id="topicsList"></div>
             </div>
         </div>
-
-        <!-- Вкладка: Рапорты -->
         <div id="tabReports" class="tab-content">
             <div class="card">
                 <h2 style="color:var(--text-primary); margin-bottom:16px;">📄 Управление рапортами</h2>
@@ -86,32 +173,30 @@
 
     <script src="script.js"></script>
     <script>
-        // Функция переключения вкладок с анимацией
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
         function showTab(tab) {
-            // Скрываем все вкладки
             document.querySelectorAll('.tab-content').forEach(el => {
                 el.classList.remove('active');
                 el.style.display = 'none';
             });
-            // Показываем нужную
             const activeTab = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
             activeTab.style.display = 'block';
-            // Небольшая задержка для запуска анимации (чтобы display:block сначала применился)
             requestAnimationFrame(() => {
                 activeTab.classList.add('active');
             });
 
-            // Обновляем активную кнопку
             document.querySelectorAll('.console-tabs .btn').forEach(b => b.classList.remove('active'));
             document.querySelector(`.console-tabs .btn[data-tab="${tab}"]`).classList.add('active');
 
-            // Рендерим данные
             if (tab === 'users') renderUsers();
             if (tab === 'topics') renderTopics();
             if (tab === 'reports') renderReports();
         }
 
-        // ===== ПОЛЬЗОВАТЕЛИ =====
         function renderUsers() {
             const users = getUsers();
             const container = document.getElementById('usersList');
@@ -150,7 +235,6 @@
             container.innerHTML = html;
         }
 
-        // ===== РЕДАКТИРОВАНИЕ (МОДАЛЬНОЕ ОКНО) =====
         function openEditModal(callsign) {
             const user = getUserByCallsign(callsign);
             if (!user) return;
@@ -187,7 +271,6 @@
             }
         });
 
-        // ===== ОСТАЛЬНЫЕ ФУНКЦИИ =====
         function makeAdmin(callsign) {
             if (confirm(`Назначить ${callsign} администратором?`)) {
                 setUserRole(callsign, 'admin');
@@ -209,7 +292,6 @@
             }
         }
 
-        // ===== ТЕМЫ =====
         function renderTopics() {
             const topics = getTopics();
             const container = document.getElementById('topicsList');
@@ -241,7 +323,6 @@
             }
         }
 
-        // ===== РАПОРТЫ =====
         function renderReports() {
             const reports = getReports();
             const container = document.getElementById('reportsList');
@@ -291,7 +372,6 @@
             return div.innerHTML;
         }
 
-        // По умолчанию показываем пользователей
         window.onload = function() {
             showTab('users');
         };
