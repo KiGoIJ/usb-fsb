@@ -233,7 +233,6 @@
 
         <div id="docGrid" class="doc-grid"></div>
 
-        <!-- Модальное окно просмотра -->
         <div id="docViewModal" class="modal doc-modal" style="display:none;">
             <div class="modal-content">
                 <h2 id="viewDocTitle"></h2>
@@ -249,7 +248,6 @@
             </div>
         </div>
 
-        <!-- Модальное окно добавления -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
@@ -290,8 +288,8 @@
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
         document.getElementById('positionDisplay').textContent = getPosition(callsign);
 
-        const isAdmin = localStorage.getItem('isAdmin') === 'true';
-        if (isAdmin) {
+        // Проверяем права администратора без создания новой переменной
+        if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
             document.getElementById('addDocBtn').style.display = 'inline-flex';
         }
@@ -329,6 +327,7 @@
                 const card = document.createElement('div');
                 card.className = 'doc-card';
                 card.dataset.id = doc.id;
+                const isAdmin = localStorage.getItem('isAdmin') === 'true';
                 card.innerHTML = `
                     <div class="doc-header">
                         <span class="doc-title">${escapeHtml(doc.title)}</span>
