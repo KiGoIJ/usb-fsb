@@ -162,6 +162,11 @@
         .doc-card {
             animation: fadeInUp 0.4s ease forwards;
         }
+        /* Дополнительно для выбора категорий в модалке */
+        #categorySelector .filter-btn {
+            font-size: 0.8rem;
+            padding: 4px 14px;
+        }
     </style>
 </head>
 <body>
@@ -228,20 +233,22 @@
             </div>
         </div>
 
-        <!-- Модальное окно добавления -->
+        <!-- Модальное окно добавления с кнопками-категориями -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
                 <form id="addDocForm">
                     <label>Категория:</label>
-                    <select id="docCategory" required>
-                        <option value="Приказы">Приказы</option>
-                        <option value="Рапорты">Рапорты</option>
-                        <option value="Ориентировки">Ориентировки</option>
-                        <option value="Инструкции">Инструкции</option>
-                        <option value="Протоколы">Протоколы</option>
-                        <option value="Прочее">Прочее</option>
-                    </select>
+                    <div class="filter-group" id="categorySelector">
+                        <button type="button" class="filter-btn active" data-cat="Приказы">Приказы</button>
+                        <button type="button" class="filter-btn" data-cat="Рапорты">Рапорты</button>
+                        <button type="button" class="filter-btn" data-cat="Ориентировки">Ориентировки</button>
+                        <button type="button" class="filter-btn" data-cat="Инструкции">Инструкции</button>
+                        <button type="button" class="filter-btn" data-cat="Протоколы">Протоколы</button>
+                        <button type="button" class="filter-btn" data-cat="Прочее">Прочее</button>
+                    </div>
+                    <!-- Скрытое поле для хранения выбранной категории -->
+                    <input type="hidden" id="selectedCategory" value="Приказы">
 
                     <label>Номер документа:</label>
                     <input type="text" id="docNumber" placeholder="Например: № 123/45">
@@ -277,7 +284,7 @@
         // ===== СОСТОЯНИЕ =====
         let currentCategory = 'all';
 
-        // ===== РЕНДЕРИНГ =====
+        // ===== РЕНДЕРИНГ ДОКУМЕНТОВ =====
         function renderDocuments() {
             const docs = getDocuments();
             const search = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -343,18 +350,34 @@
             document.getElementById('docViewModal').style.display = 'none';
         }
 
-        // ===== ДОБАВЛЕНИЕ =====
+        // ===== ДОБАВЛЕНИЕ (с выбором категории кнопками) =====
         function openAddModal() {
             document.getElementById('addDocModal').style.display = 'flex';
             document.getElementById('addDocForm').reset();
+            // Сбрасываем выбор категории на первую (Приказы)
+            const btns = document.querySelectorAll('#categorySelector .filter-btn');
+            btns.forEach((b, i) => {
+                b.classList.toggle('active', i === 0);
+            });
+            document.getElementById('selectedCategory').value = 'Приказы';
         }
         function closeAddModal() {
             document.getElementById('addDocModal').style.display = 'none';
         }
 
+        // Обработчик выбора категории (клик по кнопкам)
+        document.getElementById('categorySelector').addEventListener('click', function(e) {
+            const btn = e.target.closest('.filter-btn');
+            if (!btn) return;
+            this.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('selectedCategory').value = btn.dataset.cat;
+        });
+
+        // Отправка формы добавления
         document.getElementById('addDocForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const category = document.getElementById('docCategory').value;
+            const category = document.getElementById('selectedCategory').value;
             const number = document.getElementById('docNumber').value.trim();
             const title = document.getElementById('docTitle').value.trim();
             const text = document.getElementById('docText').value.trim();
