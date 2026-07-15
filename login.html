@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="login-page">
-    <!-- Фоновый слой с эмблемой -->
     <div class="login-bg"></div>
     <div class="login-box">
         <img src="assets/emblem.png" alt="Эмблема" class="emblem" onerror="this.style.display='none'">
@@ -34,12 +33,10 @@
             const callsign = document.getElementById('callsign').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorEl = document.getElementById('error');
-
             if (!callsign || !password) {
                 errorEl.textContent = 'Введите позывной и пароль';
                 return;
             }
-
             const users = getUsers();
             const user = users.find(u => u.callsign === callsign && u.password === password);
             if (user) {
