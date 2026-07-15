@@ -288,11 +288,13 @@
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
         document.getElementById('positionDisplay').textContent = getPosition(callsign);
 
-        // Проверяем права администратора без создания новой переменной
-        if (localStorage.getItem('isAdmin') === 'true') {
-            document.getElementById('adminLink').style.display = 'inline';
-            document.getElementById('addDocBtn').style.display = 'inline-flex';
-        }
+        // Проверяем права администратора
+        (function() {
+            if (localStorage.getItem('isAdmin') === 'true') {
+                document.getElementById('adminLink').style.display = 'inline';
+                document.getElementById('addDocBtn').style.display = 'inline-flex';
+            }
+        })();
 
         // ===== СОСТОЯНИЕ =====
         let currentCategory = 'all';
@@ -327,7 +329,7 @@
                 const card = document.createElement('div');
                 card.className = 'doc-card';
                 card.dataset.id = doc.id;
-                const isAdmin = localStorage.getItem('isAdmin') === 'true';
+                const userIsAdmin = localStorage.getItem('isAdmin') === 'true';
                 card.innerHTML = `
                     <div class="doc-header">
                         <span class="doc-title">${escapeHtml(doc.title)}</span>
@@ -338,7 +340,7 @@
                     <div class="doc-footer">
                         <span class="doc-date">${new Date(doc.date).toLocaleString('ru-RU')}</span>
                         <span>
-                            ${isAdmin ? `<button class="doc-delete" onclick="event.stopPropagation(); deleteDoc('${doc.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            ${userIsAdmin ? `<button class="doc-delete" onclick="event.stopPropagation(); deleteDoc('${doc.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </span>
                     </div>
                 `;
