@@ -1,5 +1,5 @@
 /* ======================================================
-   ПЕРЕМЕННЫЕ – новая палитра #021024, #052659, #548383, #7DA0CA, #C1E8FF
+   ПЕРЕМЕННЫЕ – палитра #021024, #052659, #548383, #7DA0CA, #C1E8FF
    ====================================================== */
 :root {
     --bg-primary: #021024;
@@ -18,7 +18,8 @@
     --shadow-soft: 0 6px 24px rgba(0,0,0,0.3);
     --radius: 16px;
     --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --font-main: 'Inter', 'Montserrat', sans-serif;
+    --font-main: 'Nunito', 'Montserrat', sans-serif;
+    --font-heading: 'Quicksand', 'Nunito', sans-serif;
     --font-mono: 'Fira Code', monospace;
 }
 
@@ -36,13 +37,22 @@ body {
     color: var(--text-primary);
     font-family: var(--font-main);
     font-weight: 400;
-    line-height: 1.6;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
 }
 
-/* Фоновый узор */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+
 body::before {
     content: "";
     position: fixed;
@@ -61,50 +71,37 @@ body::before {
    АНИМАЦИИ
    ====================================================== */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-
 @keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+@keyframes floatStar {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+    100% { transform: translate(30px, -30px) rotate(20deg); opacity: 0.2; }
 }
 
-/* Анимация для карточек при загрузке */
+/* Анимации для элементов */
 .card {
     animation: fadeInUp 0.5s ease forwards;
 }
-
-/* Задержки для стат-карточек */
 .stat-card:nth-child(1) { animation-delay: 0.05s; }
 .stat-card:nth-child(2) { animation-delay: 0.1s; }
 .stat-card:nth-child(3) { animation-delay: 0.15s; }
 .stat-card:nth-child(4) { animation-delay: 0.2s; }
-
-/* Анимация для навигационных карточек */
 .nav-card {
     animation: fadeInUp 0.5s ease forwards;
 }
 .nav-card:nth-child(1) { animation-delay: 0.25s; }
 .nav-card:nth-child(2) { animation-delay: 0.3s; }
 .nav-card:nth-child(3) { animation-delay: 0.35s; }
+.nav-card:nth-child(4) { animation-delay: 0.4s; }
 
 /* ======================================================
    ШАПКА
@@ -122,7 +119,6 @@ header {
     top: 0;
     z-index: 1000;
 }
-
 header .header-brand {
     display: flex;
     align-items: center;
@@ -165,7 +161,7 @@ button, .btn {
     padding: 12px 28px;
     border-radius: 10px;
     font-family: var(--font-main);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
@@ -174,6 +170,7 @@ button, .btn {
     justify-content: center;
     gap: 10px;
     box-shadow: 0 4px 16px rgba(84, 131, 131, 0.3);
+    letter-spacing: 0.03em;
 }
 button:hover, .btn:hover {
     background: var(--accent-dark);
@@ -197,7 +194,7 @@ button.small, .btn.small {
 }
 
 /* ======================================================
-   КАРТОЧКИ (полупрозрачные)
+   КАРТОЧКИ
    ====================================================== */
 .card {
     background: var(--bg-card);
@@ -208,6 +205,8 @@ button.small, .btn.small {
     box-shadow: var(--shadow-soft);
     transition: var(--transition);
     color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.7;
 }
 .card:hover {
     border-color: rgba(84, 131, 131, 0.3);
@@ -254,7 +253,7 @@ label {
 }
 
 /* ======================================================
-   ТАБЛИЦЫ (улучшенная читаемость)
+   ТАБЛИЦЫ
    ====================================================== */
 table {
     width: 100%;
@@ -262,8 +261,9 @@ table {
     border-spacing: 0 4px;
     margin-top: 16px;
     font-family: var(--font-main);
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--text-primary);
+    letter-spacing: 0.01em;
 }
 th {
     background: rgba(5, 38, 89, 0.3);
@@ -294,13 +294,59 @@ tr:last-child td {
    АВТОРИЗАЦИЯ
    ====================================================== */
 .login-page {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background: var(--bg-primary);
+    overflow: hidden;
+}
+.login-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: 
+        linear-gradient(135deg,
+            rgba(255,255,255,0.03) 0%, rgba(0,50,150,0.05) 20%,
+            rgba(255,255,255,0.03) 40%, rgba(200,0,0,0.05) 60%,
+            rgba(255,255,255,0.03) 80%, rgba(0,50,150,0.05) 100%),
+        url('assets/emblem.png') no-repeat center;
+    background-size: cover, 60% auto;
+    background-blend-mode: overlay;
+    opacity: 0.15;
+    filter: blur(2px) brightness(0.9);
+    transform: scale(1.1);
+}
+.login-page::before,
+.login-page::after {
+    content: "✦";
+    position: fixed;
+    font-size: 4rem;
+    color: rgba(84, 131, 131, 0.1);
+    z-index: 0;
+    pointer-events: none;
+    animation: floatStar 12s infinite alternate ease-in-out;
+}
+.login-page::before {
+    top: 10%;
+    left: 5%;
+    font-size: 5rem;
+    animation-delay: 0s;
+}
+.login-page::after {
+    bottom: 10%;
+    right: 5%;
+    font-size: 6rem;
+    animation-delay: -6s;
 }
 .login-box {
+    position: relative;
+    z-index: 1;
     background: var(--bg-card);
     backdrop-filter: blur(16px);
     padding: 48px 40px 40px;
@@ -322,6 +368,7 @@ tr:last-child td {
     color: var(--text-primary);
     font-size: 1.4rem;
     margin-bottom: 24px;
+    line-height: 1.4;
 }
 .login-box input {
     background: rgba(255,255,255,0.06);
@@ -351,8 +398,6 @@ tr:last-child td {
     color: var(--text-primary);
     letter-spacing: -0.02em;
 }
-
-/* Статистика */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -389,8 +434,6 @@ tr:last-child td {
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
-
-/* Оперативная сводка */
 .summary-card {
     margin-bottom: 40px;
 }
@@ -408,8 +451,6 @@ tr:last-child td {
     border-bottom: 1px solid var(--border);
     color: var(--text-secondary);
 }
-
-/* Навигационные карточки */
 .nav-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -489,7 +530,7 @@ tr:last-child td {
 }
 
 /* ======================================================
-   КОНСОЛЬ (вкладки и анимация табов)
+   КОНСОЛЬ
    ====================================================== */
 .console-tabs {
     display: flex;
@@ -511,8 +552,6 @@ tr:last-child td {
     color: #fff;
     border-color: var(--accent);
 }
-
-/* Анимация содержимого вкладок */
 .tab-content {
     display: none;
     animation: fadeInUp 0.4s ease forwards;
@@ -521,7 +560,9 @@ tr:last-child td {
     display: block;
 }
 
-/* Модальное окно */
+/* ======================================================
+   МОДАЛЬНОЕ ОКНО
+   ====================================================== */
 .modal {
     display: none;
     position: fixed;
@@ -612,187 +653,12 @@ tr:last-child td {
         padding: 20px;
     }
 }
-
 @media (max-width: 480px) {
     .stats-grid, .nav-grid {
         grid-template-columns: 1fr;
     }
     th, td {
         padding: 10px 12px;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
     }
-}
-
-/* ======================================================
-   ПЕРЕМЕННЫЕ – новая палитра + шрифты
-   ====================================================== */
-:root {
-    --bg-primary: #021024;
-    --bg-secondary: #052659;
-    --bg-card: rgba(7, 38, 89, 0.6);
-    --bg-card-hover: rgba(7, 38, 89, 0.8);
-    --accent: #548383;
-    --accent-dark: #3d6a6a;
-    --accent-glow: #54838344;
-    --text-primary: #C1E8FF;
-    --text-secondary: #7DA0CA;
-    --text-dim: #548383;
-    --text-on-dark: #C1E8FF;
-    --border: rgba(125, 160, 202, 0.15);
-    --shadow: 0 12px 40px rgba(0,0,0,0.6);
-    --shadow-soft: 0 6px 24px rgba(0,0,0,0.3);
-    --radius: 16px;
-    --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --font-main: 'Nunito', 'Montserrat', sans-serif;
-    --font-heading: 'Quicksand', 'Nunito', sans-serif;
-    --font-mono: 'Fira Code', monospace;
-}
-
-/* ======================================================
-   ГЛОБАЛЬНЫЕ СТИЛИ (с улучшенной типографикой)
-   ====================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: var(--font-main);
-    font-weight: 400;
-    line-height: 1.7;          /* увеличенный межстрочный интервал */
-    letter-spacing: 0.01em;    /* лёгкий кернинг */
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
-}
-
-/* Заголовки – более воздушные */
-h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-    color: var(--text-primary);
-}
-
-/* ======================================================
-   ОСТАЛЬНЫЕ СТИЛИ (без изменений, кроме шрифтов)
-   ====================================================== */
-
-/* ... (все остальные стили из предыдущего ответа, но с обновлёнными шрифтами) */
-
-/* Важно: таблицы используют основной шрифт для лучшей читаемости */
-table {
-    font-family: var(--font-main);
-    font-size: 1rem;           /* увеличенный размер */
-    letter-spacing: 0.01em;
-}
-
-/* Для кода и моноширинных данных можно оставить Fira Code */
-code, .mono {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-}
-
-/* Улучшаем читаемость карточек */
-.card {
-    font-size: 1rem;
-    line-height: 1.7;
-}
-
-/* Кнопки – более жирный шрифт */
-button, .btn {
-    font-weight: 700;          /* делаем жирнее для лучшей читаемости */
-    letter-spacing: 0.03em;
-}
-
-/* ======================================================
-   СТРАНИЦА ВХОДА – ФОН С ЭМБЛЕМОЙ И ТРИКОЛОРОМ
-   ====================================================== */
-.login-page {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: var(--bg-primary);
-    overflow: hidden;
-}
-
-/* Фоновый слой с эмблемой */
-.login-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    background: 
-        /* Триколор (полупрозрачные полосы) */
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.03) 0%,
-            rgba(0, 50, 150, 0.05) 20%,
-            rgba(255, 255, 255, 0.03) 40%,
-            rgba(200, 0, 0, 0.05) 60%,
-            rgba(255, 255, 255, 0.03) 80%,
-            rgba(0, 50, 150, 0.05) 100%
-        ),
-        /* Размытая эмблема */
-        url('assets/emblem.png') no-repeat center;
-    background-size: cover, 60% auto;
-    background-blend-mode: overlay;
-    opacity: 0.15;
-    filter: blur(2px) brightness(0.9);
-    transform: scale(1.1);
-}
-
-/* Дополнительные декоративные элементы (звёзды) */
-.login-page::before,
-.login-page::after {
-    content: "✦";
-    position: fixed;
-    font-size: 4rem;
-    color: rgba(84, 131, 131, 0.1);
-    z-index: 0;
-    pointer-events: none;
-    animation: floatStar 12s infinite alternate ease-in-out;
-}
-.login-page::before {
-    top: 10%;
-    left: 5%;
-    font-size: 5rem;
-    animation-delay: 0s;
-}
-.login-page::after {
-    bottom: 10%;
-    right: 5%;
-    font-size: 6rem;
-    animation-delay: -6s;
-}
-
-@keyframes floatStar {
-    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
-    100% { transform: translate(30px, -30px) rotate(20deg); opacity: 0.2; }
-}
-
-/* Чтобы контент был поверх фона */
-.login-box {
-    position: relative;
-    z-index: 1;
-    /* остальные стили уже есть в вашем CSS */
-}
-
-/* Стили для штатного расписания */
-#staffContainer table {
-    margin-top: 0;
-}
-#staffContainer td:last-child {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
 }
