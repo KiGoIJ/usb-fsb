@@ -10,7 +10,6 @@
     <title>Законодательство</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Стили для страницы законодательства */
         .legislation-controls {
             display: flex;
             flex-wrap: wrap;
@@ -47,31 +46,6 @@
             transform: translateY(-50%);
             color: var(--text-dim);
             font-size: 0.9rem;
-        }
-        .legislation-search input::placeholder {
-            color: var(--text-dim);
-        }
-        .legislation-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .legislation-filters .btn {
-            background: rgba(255,255,255,0.06);
-            color: var(--text-secondary);
-            box-shadow: none;
-            padding: 8px 18px;
-            font-size: 0.85rem;
-            border-radius: 20px;
-            border: 1px solid transparent;
-        }
-        .legislation-filters .btn:hover {
-            background: rgba(255,255,255,0.12);
-        }
-        .legislation-filters .btn.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
         }
         .legislation-stats {
             color: var(--text-secondary);
@@ -154,9 +128,6 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            .legislation-filters {
-                justify-content: center;
-            }
         }
         @media (max-width: 480px) {
             .legislation-card {
@@ -198,33 +169,39 @@
         <h1 style="color:var(--text-primary); font-weight:700; font-size:2rem; letter-spacing:-0.02em;">⚖️ Собрание законодательства</h1>
         <p style="color:var(--text-secondary); margin-bottom:20px;">Полная база статей УК РФ, КоАП РФ, ПДД, ФЗ о ФСБ и других нормативных актов</p>
 
-        <!-- Управление -->
         <div class="legislation-controls">
             <div class="legislation-search">
                 <i class="fa-solid fa-search search-icon"></i>
                 <input type="text" id="legislationSearch" placeholder="Поиск по статьям — номер, заголовок, текст..." oninput="renderLegislation()">
             </div>
-            <div class="legislation-filters" id="codeFilter">
-                <button class="btn active" data-code="all">Все</button>
-                <button class="btn" data-code="УК РФ">УК РФ</button>
-                <button class="btn" data-code="КоАП РФ">КоАП РФ</button>
-                <button class="btn" data-code="ПДД">ПДД</button>
-                <button class="btn" data-code="ФЗ о ФСБ">ФЗ о ФСБ</button>
+            <!-- Единые фильтры кодексов -->
+            <div class="filter-group" id="codeFilter">
+                <button class="filter-btn active" data-code="all">Все</button>
+                <button class="filter-btn" data-code="УК РФ">УК РФ</button>
+                <button class="filter-btn" data-code="КоАП РФ">КоАП РФ</button>
+                <button class="filter-btn" data-code="ПДД">ПДД</button>
+                <button class="filter-btn" data-code="ФЗ о ФСБ">ФЗ о ФСБ</button>
             </div>
         </div>
 
-        <!-- Статистика -->
         <div class="legislation-stats" id="legislationStats">Найдено: <strong>0</strong> статей</div>
-
-        <!-- Результаты -->
         <div id="legislationResults" class="legislation-grid"></div>
     </main>
 
     <script src="script.js"></script>
     <script>
-        // ===== ПОЛНАЯ БАЗА СТАТЕЙ (с сайта https://fsb.mirmiryot.workers.dev/) =====
+        // ===== ПОЛЬЗОВАТЕЛЬ =====
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        document.getElementById('positionDisplay').textContent = getPosition(callsign);
+        if (localStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('adminLink').style.display = 'inline';
+        }
+
+        // ===== БАЗА СТАТЕЙ (полная) =====
         const legislationArticles = [
-            // ===== УК РФ =====
+            // УК РФ
             { code: 'УК РФ', number: 'Ст. 105', title: 'Убийство', text: 'Умышленное причинение смерти другому человеку.', sanction: 'Лишение свободы 6–15 лет; при отягчающих — 8–20 лет либо пожизненно.' },
             { code: 'УК РФ', number: 'Ст. 106', title: 'Убийство матерью новорождённого', text: 'Убийство матерью своего новорождённого ребёнка.', sanction: 'Лишение свободы до 5 лет.' },
             { code: 'УК РФ', number: 'Ст. 107', title: 'Убийство в состоянии аффекта', text: 'Убийство в состоянии внезапного сильного душевного волнения.', sanction: 'Лишение свободы до 3 лет.' },
@@ -267,8 +244,7 @@
             { code: 'УК РФ', number: 'Ст. 318', title: 'Применение насилия к представителю власти', text: 'Применение насилия в отношении представителя власти в связи с обязанностями.', sanction: 'Штраф до 40 тыс. руб. либо арест до 6 мес.; при опасном насилии — лишение свободы до 10 лет.' },
             { code: 'УК РФ', number: 'Ст. 319', title: 'Оскорбление представителя власти', text: 'Оскорбление представителя власти при исполнении обязанностей.', sanction: 'Штраф до 40 тыс. руб. либо обязательные работы до 360 ч.' },
             { code: 'УК РФ', number: 'Ст. 327', title: 'Подделка документов', text: 'Подделка удостоверения или иного документа, предоставляющего права.', sanction: 'Ограничение свободы до 3 лет либо лишение свободы до 2 лет.' },
-
-            // ===== КоАП РФ =====
+            // КоАП РФ
             { code: 'КоАП РФ', number: 'Ст. 12.8', title: 'Управление ТС в состоянии опьянения', text: 'Управление транспортным средством в состоянии алкогольного или наркотического опьянения.', sanction: 'Штраф 45 000 ₽ и лишение прав 1,5–2 года.' },
             { code: 'КоАП РФ', number: 'Ст. 12.9', title: 'Превышение скорости', text: 'Превышение установленной скорости движения.', sanction: 'Штраф 500–5 000 ₽, при повторном — лишение прав до 1 года.' },
             { code: 'КоАП РФ', number: 'Ст. 12.12', title: 'Проезд на запрещающий сигнал', text: 'Проезд на красный сигнал светофора или жест регулировщика.', sanction: 'Штраф 1 000 ₽, при повторном — 5 000 ₽ или лишение прав до 6 мес.' },
@@ -286,8 +262,7 @@
             { code: 'КоАП РФ', number: 'Ст. 20.20', title: 'Распитие алкоголя в общественных местах', text: 'Потребление алкоголя или наркотиков в запрещённых общественных местах.', sanction: 'Штраф 500–1 500 ₽.' },
             { code: 'КоАП РФ', number: 'Ст. 20.21', title: 'Появление в пьяном виде', text: 'Появление в общественных местах в состоянии опьянения, оскорбляющем достоинство.', sanction: 'Штраф 500–1 500 ₽ либо арест до 15 суток.' },
             { code: 'КоАП РФ', number: 'Ст. 20.25', title: 'Неуплата административного штрафа', text: 'Неуплата штрафа в срок либо уклонение от обязательных работ.', sanction: 'Штраф в двукратном размере, арест до 15 суток либо обязательные работы.' },
-
-            // ===== ПДД =====
+            // ПДД
             { code: 'ПДД', number: 'Ст. 1', title: 'Общие положения', text: 'Термины, обозначения и общие условия применения Правил дорожного движения.', sanction: '—' },
             { code: 'ПДД', number: 'Ст. 2', title: 'Общие обязанности водителей', text: 'Иметь документы, проверять исправность ТС, действия при ДТП, требования к состоянию водителя.', sanction: 'Нарушение — ст. 12.3, 12.5, 12.27 КоАП.' },
             { code: 'ПДД', number: 'Ст. 2.7', title: 'Запреты для водителя', text: 'Запрет управления в состоянии опьянения, усталости, под воздействием лекарств; запрет пользования телефоном.', sanction: 'Ст. 12.8, 12.36.1 КоАП.' },
@@ -315,8 +290,7 @@
             { code: 'ПДД', number: 'Ст. 24', title: 'Дополнительные требования к велосипедистам', text: 'Движение велосипедистов, возрастные ограничения, запреты.', sanction: 'Ст. 12.29 КоАП.' },
             { code: 'ПДД', number: 'Ст. 25', title: 'Движение гужевых повозок и прогон животных', text: 'Правила движения гужевого транспорта и прогона скота.', sanction: 'Ст. 12.29 КоАП.' },
             { code: 'ПДД', number: 'Ст. 26', title: 'Учебная и иная деятельность на дорогах', text: 'Условия проведения работ, использование опознавательных знаков.', sanction: '—' },
-
-            // ===== ФЗ о ФСБ =====
+            // ФЗ о ФСБ
             { code: 'ФЗ о ФСБ', number: 'Ст. 1', title: 'Федеральная служба безопасности', text: 'ФСБ — единая централизованная система органов, обеспечивающих безопасность РФ.', sanction: '—' },
             { code: 'ФЗ о ФСБ', number: 'Ст. 2', title: 'Органы федеральной службы безопасности', text: 'Структура органов ФСБ: центральный аппарат, территориальные органы, органы в войсках, пограничные органы.', sanction: '—' },
             { code: 'ФЗ о ФСБ', number: 'Ст. 3', title: 'Правовая основа деятельности', text: 'Конституция, федеральные законы и иные нормативные акты, регулирующие деятельность ФСБ.', sanction: '—' },
@@ -335,32 +309,18 @@
             { code: 'ФЗ о ФСБ', number: 'Ст. 14', title: 'Обязанность оказания содействия', text: 'Госорганы, организации и лица обязаны оказывать содействие органам ФСБ.', sanction: '—' }
         ];
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
-        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
-        document.getElementById('userDisplay').textContent = callsign;
-        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
-        document.getElementById('positionDisplay').textContent = getPosition(callsign);
-
-        if (localStorage.getItem('isAdmin') === 'true') {
-            document.getElementById('adminLink').style.display = 'inline';
-        }
-
         // ===== ПЕРЕМЕННЫЕ СОСТОЯНИЯ =====
         let currentCodeFilter = 'all';
 
-        // ===== ОСНОВНАЯ ФУНКЦИЯ РЕНДЕРИНГА (ПОИСК В РЕАЛЬНОМ ВРЕМЕНИ) =====
+        // ===== ОСНОВНАЯ ФУНКЦИЯ РЕНДЕРИНГА =====
         function renderLegislation() {
             const searchQuery = document.getElementById('legislationSearch').value.trim().toLowerCase();
             const codeFilter = currentCodeFilter;
 
             let filtered = legislationArticles;
-
-            // Фильтр по кодексу
             if (codeFilter !== 'all') {
                 filtered = filtered.filter(a => a.code === codeFilter);
             }
-
-            // Фильтр по поисковому запросу (номер, заголовок, текст)
             if (searchQuery) {
                 filtered = filtered.filter(a =>
                     a.number.toLowerCase().includes(searchQuery) ||
@@ -369,10 +329,8 @@
                 );
             }
 
-            // Обновляем счётчик
             document.getElementById('legislationStats').innerHTML = `Найдено: <strong>${filtered.length}</strong> статей`;
 
-            // Рендерим результаты
             const container = document.getElementById('legislationResults');
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="empty-legislation">Ничего не найдено по вашему запросу</div>';
@@ -396,27 +354,23 @@
             });
         }
 
-        // ===== ОБРАБОТКА КЛИКОВ ПО ФИЛЬТРАМ =====
+        // ===== ОБРАБОТКА ФИЛЬТРОВ =====
         document.getElementById('codeFilter').addEventListener('click', function(e) {
-            const btn = e.target.closest('.btn');
+            const btn = e.target.closest('.filter-btn');
             if (!btn) return;
-            this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            this.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCodeFilter = btn.dataset.code;
             renderLegislation();
         });
 
-        // ===== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ =====
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // ===== ЗАГРУЗКА =====
-        window.onload = function() {
-            renderLegislation();
-        };
+        window.onload = renderLegislation;
     </script>
 </body>
 </html>
