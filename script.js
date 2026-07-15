@@ -325,3 +325,41 @@ function getLegislationArticles() {
         }
     ];
 }
+
+// ============================================================
+// КАТЕГОРИИ ФОРУМА (только Кадры)
+// ============================================================
+function getCategories() {
+    return [
+        { id: 'recruiting', name: 'Кадры / Рекрутинг', icon: '👤' }
+    ];
+}
+
+// ============================================================
+// ФОРМИРОВАНИЕ ШТАТНОГО РАСПИСАНИЯ
+// ============================================================
+function getStaffData() {
+    const users = getUsers();
+    // Группируем по должности (position), сортируем
+    const groups = {};
+    users.forEach(u => {
+        const pos = u.position || 'Без должности';
+        if (!groups[pos]) groups[pos] = [];
+        groups[pos].push(u.callsign);
+    });
+    // Сортируем должности: сначала те, что начинаются с "Начальник", "Заместитель", потом остальные по алфавиту
+    const order = ['Начальник', 'Заместитель', 'Старший', 'Группа'];
+    const sortedKeys = Object.keys(groups).sort((a, b) => {
+        const idxA = order.findIndex(o => a.startsWith(o));
+        const idxB = order.findIndex(o => b.startsWith(o));
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+    });
+    // Возвращаем массив объектов { должность, сотрудники }
+    return sortedKeys.map(pos => ({
+        position: pos,
+        members: groups[pos]
+    }));
+}
