@@ -301,3 +301,30 @@ function deleteDocument(docId) {
 function generateDocId() {
     return 'Д-' + Date.now();
 }
+
+// ============================================================
+// ДОКУМЕНТЫ (документооборот)
+// ============================================================
+function getDocuments() {
+    return JSON.parse(localStorage.getItem('documents') || '[]');
+}
+
+function saveDocuments(docs) {
+    localStorage.setItem('documents', JSON.stringify(docs));
+}
+
+function addDocument(doc) {
+    const docs = getDocuments();
+    docs.push(doc);
+    saveDocuments(docs);
+}
+
+function deleteDocument(docId) {
+    let docs = getDocuments();
+    docs = docs.filter(d => d.id !== docId);
+    saveDocuments(docs);
+}
+
+function generateDocId() {
+    return 'Д-' + Date.now();
+}
