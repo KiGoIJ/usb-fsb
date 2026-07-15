@@ -328,3 +328,12 @@ function deleteDocument(docId) {
 function generateDocId() {
     return 'Д-' + Date.now();
 }
+
+document.getElementById('statusFilter').addEventListener('click', function(e) {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    this.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const status = btn.dataset.status;
+    // ... ваша логика фильтрации
+});
