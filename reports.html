@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Рапорты</title>
     <link rel="stylesheet" href="style.css">
@@ -22,17 +22,22 @@
             <span>Система рапортов</span>
         </div>
         <div>
-            <span id="adminLink" style="display:none; margin-right:15px;">
+            <span style="margin-right:16px; color:var(--text-dim);">
+                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
+                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+                <span id="positionDisplay" style="color:var(--text-secondary); font-weight:400; margin-left:8px; font-size:0.85rem;"></span>
+            </span>
+            <span id="adminLink" style="display:none; margin-right:10px;">
                 <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
             </span>
             <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
-            <a href="#" onclick="logout()" style="margin-left:15px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+            <a href="#" onclick="logout()" style="margin-left:12px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
         </div>
     </header>
 
     <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h1 style="color:var(--accent);">📄 Реестр рапортов</h1>
+            <h1 style="color:var(--text-primary);">📄 Реестр рапортов</h1>
             <button class="btn" onclick="showReportForm()"><i class="fa-solid fa-plus"></i> Подать рапорт</button>
         </div>
 
@@ -60,6 +65,11 @@
 
     <script src="script.js"></script>
     <script>
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
         }
@@ -124,13 +134,18 @@
             `;
             const tbody = table.querySelector('tbody');
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-            filtered.forEach((r, index) => {
+            filtered.forEach(r => {
                 const row = tbody.insertRow();
                 const statusClass = r.status === 'одобрен' ? 'completed' : (r.status === 'отклонён' ? 'registered' : 'in-progress');
+                const authorRank = getRank(r.author);
+                const authorPosition = getPosition(r.author);
                 row.innerHTML = `
                     <td><strong>${r.id}</strong></td>
                     <td>${escapeHtml(r.subject)}</td>
-                    <td>${escapeHtml(r.author)}</td>
+                    <td>
+                        ${escapeHtml(authorRank)} ${escapeHtml(r.author)}
+                        <br><span style="font-size:0.75rem; color:var(--text-secondary);">${escapeHtml(authorPosition)}</span>
+                    </td>
                     <td>${new Date(r.date).toLocaleString('ru-RU')}</td>
                     <td><span class="status-badge ${statusClass}">${r.status}</span></td>
                     <td>
