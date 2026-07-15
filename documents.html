@@ -216,12 +216,12 @@
             margin-top: 4px;
         }
 
-        /* ===== Категории в модалке ===== */
+        /* ===== КАТЕГОРИИ В МОДАЛКЕ (исправлено) ===== */
         #categorySelector {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 6px;
+            padding: 10px;
             background: rgba(255,255,255,0.04);
             border-radius: var(--radius);
             border: 1px solid var(--border);
@@ -231,21 +231,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 12px;
+            gap: 4px;
+            padding: 6px 8px;
+            border-radius: 10px;
             background: rgba(255,255,255,0.04);
             border: 1px solid transparent;
             transition: all 0.25s ease;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             cursor: pointer;
             font-family: var(--font-main);
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         #categorySelector .filter-btn i {
-            font-size: 1rem;
+            font-size: 0.8rem;
             opacity: 0.6;
             transition: opacity 0.2s;
         }
@@ -438,7 +440,7 @@
         // ===== СОСТОЯНИЕ =====
         let currentCategory = 'all';
 
-        // ===== РЕНДЕРИНГ ДОКУМЕНТОВ =====
+        // ===== РЕНДЕРИНГ =====
         function renderDocuments() {
             const docs = getDocuments();
             const search = document.getElementById('searchInput').value.trim().toLowerCase();
