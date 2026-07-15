@@ -787,3 +787,12 @@ button, .btn {
     z-index: 1;
     /* остальные стили уже есть в вашем CSS */
 }
+
+/* Стили для штатного расписания */
+#staffContainer table {
+    margin-top: 0;
+}
+#staffContainer td:last-child {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
