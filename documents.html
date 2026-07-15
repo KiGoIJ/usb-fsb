@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>База данных</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Стили для страницы документов */
+        .doc-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+        .doc-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .doc-categories .btn {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            box-shadow: none;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+        .doc-categories .btn:hover {
+            background: rgba(255,255,255,0.12);
+        }
+        .doc-categories .btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .doc-search {
+            flex: 1;
+            min-width: 200px;
+        }
+        .doc-search input {
+            margin: 0;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 10px 18px;
+            color: var(--text-primary);
+            width: 100%;
+        }
+        .doc-search input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(84, 131, 131, 0.2);
+        }
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .doc-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        .doc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(84, 131, 131, 0.3);
+        }
+        .doc-card .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        .doc-card .doc-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+        .doc-card .doc-number {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.85rem;
+            background: rgba(84, 131, 131, 0.15);
+            padding: 2px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .doc-card .doc-category {
+            display: inline-block;
+            background: rgba(125, 160, 202, 0.15);
+            color: var(--text-secondary);
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
+        }
+        .doc-card .doc-text-preview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .doc-card .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+        }
+        .doc-card .doc-footer .doc-date {
+            color: var(--text-dim);
+        }
+        .doc-card .doc-delete {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        .doc-card .doc-delete:hover {
+            background: rgba(255, 77, 77, 0.15);
+            color: #ff4d4d;
+        }
+
+        /* Модальное окно для просмотра документа */
+        .doc-modal .modal-content {
+            max-width: 600px;
+        }
+        .doc-modal .modal-content .full-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            white-space: pre-wrap;
+            margin: 16px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .doc-modal .modal-content .full-text::-webkit-scrollbar {
+            width: 4px;
+        }
+        .doc-modal .modal-content .full-text::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* Кнопка добавления */
+        .btn-add-doc {
+            margin-left: auto;
+        }
+
+        /* Форма добавления (в модалке) */
+        .add-doc-form label {
+            margin-top: 10px;
+        }
+        .add-doc-form select,
+        .add-doc-form input,
+        .add-doc-form textarea {
+            margin-top: 4px;
+        }
+
+        .empty-docs {
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 60px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>База данных</span>
+        </div>
+        <div>
+            <span style="margin-right:16px; color:var(--text-dim);">
+                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
+                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+                <span id="positionDisplay" style="color:var(--text-secondary); font-weight:400; margin-left:8px; font-size:0.85rem;"></span>
+            </span>
+            <span id="adminLink" style="display:none; margin-right:10px;">
+                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
+            </span>
+            <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
+            <a href="#" onclick="logout()" style="margin-left:12px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        </div>
+    </header>
+
+    <main style="padding: 30px 20px; max-width: 1200px; margin:0 auto;">
+        <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:8px;">📂 База данных</h1>
+        <p style="color:var(--text-secondary); margin-bottom:20px;">Документооборот и нормативная база</p>
+
+        <!-- Управление -->
+        <div class="doc-controls">
+            <div class="doc-categories" id="categoryFilter">
+                <button class="btn active" data-cat="all">Все</button>
+                <button class="btn" data-cat="Приказы">Приказы</button>
+                <button class="btn" data-cat="Рапорты">Рапорты</button>
+                <button class="btn" data-cat="Ориентировки">Ориентировки</button>
+                <button class="btn" data-cat="Инструкции">Инструкции</button>
+                <button class="btn" data-cat="Протоколы">Протоколы</button>
+                <button class="btn" data-cat="Прочее">Прочее</button>
+            </div>
+            <div class="doc-search">
+                <input type="text" id="searchInput" placeholder="Поиск по документам — номер, заголовок, текст..." oninput="renderDocuments()">
+            </div>
+            <button class="btn btn-add-doc" id="addDocBtn" style="display:none;" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Добавить</button>
+        </div>
+
+        <!-- Сетка документов -->
+        <div id="docGrid" class="doc-grid"></div>
+
+        <!-- Модальное окно просмотра документа -->
+        <div id="docViewModal" class="modal doc-modal" style="display:none;">
+            <div class="modal-content">
+                <h2 id="viewDocTitle"></h2>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:8px;">
+                    <span id="viewDocNumber" class="doc-number" style="background:rgba(84,131,131,0.15); padding:2px 12px; border-radius:12px;"></span>
+                    <span id="viewDocCategory" class="doc-category" style="background:rgba(125,160,202,0.15); padding:2px 12px; border-radius:12px;"></span>
+                    <span id="viewDocDate" style="color:var(--text-dim); font-size:0.85rem;"></span>
+                </div>
+                <div id="viewDocText" class="full-text"></div>
+                <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:16px;">
+                    <button class="btn" onclick="closeDocView()">Закрыть</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно добавления документа -->
+        <div id="addDocModal" class="modal" style="display:none;">
+            <div class="modal-content add-doc-form">
+                <h2>📄 Добавить документ</h2>
+                <form id="addDocForm">
+                    <label>Категория:</label>
+                    <select id="docCategory" required>
+                        <option value="Приказы">Приказы</option>
+                        <option value="Рапорты">Рапорты</option>
+                        <option value="Ориентировки">Ориентировки</option>
+                        <option value="Инструкции">Инструкции</option>
+                        <option value="Протоколы">Протоколы</option>
+                        <option value="Прочее">Прочее</option>
+                    </select>
+
+                    <label>Номер документа:</label>
+                    <input type="text" id="docNumber" placeholder="Например: № 123/45" required>
+
+                    <label>Заголовок:</label>
+                    <input type="text" id="docTitle" placeholder="Краткое название" required>
+
+                    <label>Текст документа:</label>
+                    <textarea id="docText" rows="6" placeholder="Полный текст..." required></textarea>
+
+                    <div style="display:flex; gap:12px; margin-top:20px; justify-content:flex-end;">
+                        <button type="button" class="btn" onclick="closeAddModal()">Отмена</button>
+                        <button type="submit" class="btn">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // ===== Инициализация пользователя =====
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        if (isAdmin) {
+            document.getElementById('adminLink').style.display = 'inline';
+            document.getElementById('addDocBtn').style.display = 'inline-flex';
+        }
+
+        // ===== Переменные состояния =====
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        // ===== Рендеринг документов =====
+        function renderDocuments() {
+            const docs = getDocuments();
+            const search = document.getElementById('searchInput').value.trim().toLowerCase();
+            const category = currentCategory;
+
+            let filtered = docs;
+            if (category !== 'all') {
+                filtered = filtered.filter(d => d.category === category);
+            }
+            if (search) {
+                filtered = filtered.filter(d =>
+                    (d.number && d.number.toLowerCase().includes(search)) ||
+                    (d.title && d.title.toLowerCase().includes(search)) ||
+                    (d.text && d.text.toLowerCase().includes(search))
+                );
+            }
+
+            const grid = document.getElementById('docGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="empty-docs">Нет документов по заданным параметрам</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            filtered.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'doc-card';
+                card.dataset.id = doc.id;
+                card.innerHTML = `
+                    <div class="doc-header">
+                        <span class="doc-title">${escapeHtml(doc.title)}</span>
+                        <span class="doc-number">${escapeHtml(doc.number || 'Без номера')}</span>
+                    </div>
+                    <span class="doc-category">${escapeHtml(doc.category)}</span>
+                    <div class="doc-text-preview">${escapeHtml(doc.text)}</div>
+                    <div class="doc-footer">
+                        <span class="doc-date">${new Date(doc.date).toLocaleString('ru-RU')}</span>
+                        <span>
+                            ${isAdmin ? `<button class="doc-delete" onclick="event.stopPropagation(); deleteDoc('${doc.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </span>
+                    </div>
+                `;
+                card.addEventListener('click', () => openDocView(doc.id));
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== Просмотр документа =====
+        function openDocView(docId) {
+            const docs = getDocuments();
+            const doc = docs.find(d => d.id === docId);
+            if (!doc) return;
+
+            document.getElementById('viewDocTitle').textContent = doc.title;
+            document.getElementById('viewDocNumber').textContent = doc.number || 'Без номера';
+            document.getElementById('viewDocCategory').textContent = doc.category;
+            document.getElementById('viewDocDate').textContent = new Date(doc.date).toLocaleString('ru-RU');
+            document.getElementById('viewDocText').textContent = doc.text;
+            document.getElementById('docViewModal').style.display = 'flex';
+        }
+
+        function closeDocView() {
+            document.getElementById('docViewModal').style.display = 'none';
+        }
+
+        // ===== Добавление документа =====
+        function openAddModal() {
+            document.getElementById('addDocModal').style.display = 'flex';
+            document.getElementById('addDocForm').reset();
+        }
+
+        function closeAddModal() {
+            document.getElementById('addDocModal').style.display = 'none';
+        }
+
+        document.getElementById('addDocForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = document.getElementById('docCategory').value;
+            const number = document.getElementById('docNumber').value.trim();
+            const title = document.getElementById('docTitle').value.trim();
+            const text = document.getElementById('docText').value.trim();
+
+            if (!title || !text) {
+                alert('Заголовок и текст обязательны');
+                return;
+            }
+
+            const doc = {
+                id: generateDocId(),
+                category: category,
+                number: number || 'Без номера',
+                title: title,
+                text: text,
+                date: new Date().toISOString(),
+                author: localStorage.getItem('callsign') || 'Аноним'
+            };
+            addDocument(doc);
+            closeAddModal();
+            renderDocuments();
+        });
+
+        // ===== Удаление документа =====
+        function deleteDoc(docId) {
+            if (confirm('Удалить документ?')) {
+                deleteDocument(docId);
+                renderDocuments();
+            }
+        }
+
+        // ===== Обработка кликов по категориям =====
+        document.getElementById('categoryFilter').addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn');
+            if (!btn) return;
+            this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.cat;
+            renderDocuments();
+        });
+
+        // ===== Закрытие модалок по клику вне их =====
+        document.getElementById('docViewModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocView();
+        });
+        document.getElementById('addDocModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAddModal();
+        });
+
+        // ===== Вспомогательная функция =====
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ===== Загрузка =====
+        window.onload = function() {
+            renderDocuments();
+        };
+    </script>
+</body>
+</html>
