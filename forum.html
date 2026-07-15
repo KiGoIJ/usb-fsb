@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Форум УСБ</title>
     <link rel="stylesheet" href="style.css">
@@ -22,9 +22,10 @@
             <span>Форум сотрудников УСБ УФСБ</span>
         </div>
         <div>
-            <span style="margin-right:16px;">
-                Сотрудник: <strong id="userDisplay"></strong>
+            <span style="margin-right:16px; color:var(--text-dim);">
+                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
                 <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+                <span id="positionDisplay" style="color:var(--text-secondary); font-weight:400; margin-left:8px; font-size:0.85rem;"></span>
             </span>
             <span id="adminLink" style="display:none; margin-right:10px;">
                 <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
@@ -36,7 +37,7 @@
 
     <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-            <h1 style="color:var(--text-on-dark); font-size:2rem; font-weight:700;">📋 Темы форума</h1>
+            <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700;">📋 Темы форума</h1>
             <a href="new_topic.html" class="btn"><i class="fa-solid fa-plus"></i> Новая тема</a>
         </div>
 
@@ -48,6 +49,8 @@
         const callsign = localStorage.getItem('callsign') || 'Неизвестный';
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminLink').style.display = 'inline';
         }
@@ -83,9 +86,13 @@
                             window.location.href = `topic.html?id=${t.id}`;
                         });
                         const authorRank = getRank(t.author);
+                        const position = getPosition(t.author);
                         row.innerHTML = `
                             <td><strong>${escapeHtml(t.title)}</strong></td>
-                            <td>${escapeHtml(authorRank)} ${escapeHtml(t.author)}</td>
+                            <td>
+                                ${escapeHtml(authorRank)} ${escapeHtml(t.author)}
+                                <br><span style="font-size:0.75rem; color:var(--text-secondary);">${escapeHtml(position)}</span>
+                            </td>
                             <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
                             <td>${t.postCount}</td>
                             <td>${new Date(t.lastPostDate).toLocaleString('ru-RU')}</td>
