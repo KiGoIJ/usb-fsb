@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Кадровый состав</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <header>
+        <div class="header-brand">
+            <img src="assets/emblem.png" alt="Эмблема" class="emblem-small" onerror="this.style.display='none'">
+            <span>Кадровый состав УСБ УФСБ</span>
+        </div>
+        <div>
+            <span style="margin-right:16px; color:var(--text-dim);">
+                Сотрудник: <strong id="userDisplay" style="color:var(--text-primary);"></strong>
+                <span id="rankDisplay" style="color:var(--accent); font-weight:500; margin-left:6px;"></span>
+                <span id="positionDisplay" style="color:var(--text-secondary); font-weight:400; margin-left:8px; font-size:0.85rem;"></span>
+            </span>
+            <span id="adminLink" style="display:none; margin-right:10px;">
+                <a href="console.html"><i class="fa-solid fa-terminal"></i> Консоль</a>
+            </span>
+            <a href="index.html"><i class="fa-solid fa-house"></i> Главная</a>
+            <a href="#" onclick="logout()" style="margin-left:12px;"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        </div>
+    </header>
+
+    <main style="padding: 30px 20px; max-width: 1100px; margin:0 auto;">
+        <h1 style="color:var(--text-primary); font-size:2rem; font-weight:700; margin-bottom:24px;">👤 Штатное расписание</h1>
+
+        <div id="staffContainer"></div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const callsign = localStorage.getItem('callsign') || 'Неизвестный';
+        document.getElementById('userDisplay').textContent = callsign;
+        document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
+        document.getElementById('positionDisplay').textContent = getPosition(callsign);
+
+        if (localStorage.getItem('isAdmin') === 'true') {
+            document.getElementById('adminLink').style.display = 'inline';
+        }
+
+        function renderStaff() {
+            const container = document.getElementById('staffContainer');
+            const staffData = getStaffData();
+            if (staffData.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">Нет сотрудников.</p>';
+                return;
+            }
+            let html = `<table>
+                <thead>
+                    <tr>
+                        <th>Должность</th>
+                        <th>Количество</th>
+                        <th>Сотрудники</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            staffData.forEach(item => {
+                const count = item.members.length;
+                const membersList = item.members.join(', ');
+                html += `<tr>
+                    <td><strong>${escapeHtml(item.position)}</strong></td>
+                    <td>${count}</td>
+                    <td>${escapeHtml(membersList)}</td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onload = renderStaff;
+    </script>
+</body>
+</html>
