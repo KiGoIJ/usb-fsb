@@ -274,3 +274,31 @@ function getLegislationArticles() {
         { code: 'УПК РФ', number: 'ст. 91', title: 'Основания задержания', text: 'Задержание подозреваемого в совершении преступления.', sanction: 'Срок задержания не более 48 часов.' }
     ];
 }
+
+// ============================================================
+// 9. ДОКУМЕНТЫ (документооборот)
+// ============================================================
+function getDocuments() {
+    return JSON.parse(localStorage.getItem('documents') || '[]');
+}
+
+function saveDocuments(docs) {
+    localStorage.setItem('documents', JSON.stringify(docs));
+}
+
+function addDocument(doc) {
+    const docs = getDocuments();
+    docs.push(doc);
+    saveDocuments(docs);
+}
+
+function deleteDocument(docId) {
+    let docs = getDocuments();
+    docs = docs.filter(d => d.id !== docId);
+    saveDocuments(docs);
+}
+
+// Вспомогательная функция для генерации ID
+function generateDocId() {
+    return 'Д-' + Date.now();
+}
