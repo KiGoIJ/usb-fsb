@@ -194,7 +194,7 @@
         <p style="color:var(--text-secondary); margin-bottom:20px;">Документооборот и нормативная база</p>
 
         <div class="doc-controls">
-            <!-- Единые фильтры -->
+            <!-- Единый блок фильтров -->
             <div class="filter-group" id="categoryFilter">
                 <button class="filter-btn active" data-cat="all">Все</button>
                 <button class="filter-btn" data-cat="Приказы">Приказы</button>
@@ -384,7 +384,7 @@
             }
         }
 
-        // ===== ОБРАБОТКА КЛИКОВ ПО ФИЛЬТРАМ (НОВЫЙ СЕЛЕКТОР) =====
+        // ===== ОБРАБОТКА КЛИКОВ ПО ФИЛЬТРАМ =====
         document.getElementById('categoryFilter').addEventListener('click', function(e) {
             const btn = e.target.closest('.filter-btn');
             if (!btn) return;
