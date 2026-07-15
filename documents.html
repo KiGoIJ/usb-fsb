@@ -10,7 +10,6 @@
     <title>База данных</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Стили для страницы документов */
         .doc-controls {
             display: flex;
             flex-wrap: wrap;
@@ -146,7 +145,6 @@
             background: rgba(255, 77, 77, 0.15);
             color: #ff4d4d;
         }
-
         .doc-modal .modal-content {
             max-width: 600px;
         }
@@ -166,11 +164,9 @@
             background: var(--accent);
             border-radius: 10px;
         }
-
         .btn-add-doc {
             margin-left: auto;
         }
-
         .add-doc-form label {
             margin-top: 10px;
         }
@@ -179,7 +175,6 @@
         .add-doc-form textarea {
             margin-top: 4px;
         }
-
         .empty-docs {
             color: var(--text-secondary);
             text-align: center;
@@ -238,7 +233,7 @@
 
         <div id="docGrid" class="doc-grid"></div>
 
-        <!-- Модальное окно просмотра документа -->
+        <!-- Модальное окно просмотра -->
         <div id="docViewModal" class="modal doc-modal" style="display:none;">
             <div class="modal-content">
                 <h2 id="viewDocTitle"></h2>
@@ -254,6 +249,7 @@
             </div>
         </div>
 
+        <!-- Модальное окно добавления -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
@@ -288,7 +284,7 @@
 
     <script src="script.js"></script>
     <script>
-        // ===== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ =====
+        // ===== ПОЛЬЗОВАТЕЛЬ =====
         const callsign = localStorage.getItem('callsign') || 'Неизвестный';
         document.getElementById('userDisplay').textContent = callsign;
         document.getElementById('rankDisplay').textContent = '[' + getRank(callsign) + ']';
@@ -300,11 +296,10 @@
             document.getElementById('addDocBtn').style.display = 'inline-flex';
         }
 
-        // ===== ПЕРЕМЕННЫЕ СОСТОЯНИЯ =====
+        // ===== СОСТОЯНИЕ =====
         let currentCategory = 'all';
-        let currentSearch = '';
 
-        // ===== РЕНДЕРИНГ ДОКУМЕНТОВ =====
+        // ===== РЕНДЕРИНГ =====
         function renderDocuments() {
             const docs = getDocuments();
             const search = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -353,12 +348,11 @@
             });
         }
 
-        // ===== ПРОСМОТР ДОКУМЕНТА =====
+        // ===== ПРОСМОТР =====
         function openDocView(docId) {
             const docs = getDocuments();
             const doc = docs.find(d => d.id === docId);
             if (!doc) return;
-
             document.getElementById('viewDocTitle').textContent = doc.title;
             document.getElementById('viewDocNumber').textContent = doc.number || 'Без номера';
             document.getElementById('viewDocCategory').textContent = doc.category;
@@ -371,12 +365,11 @@
             document.getElementById('docViewModal').style.display = 'none';
         }
 
-        // ===== ДОБАВЛЕНИЕ ДОКУМЕНТА =====
+        // ===== ДОБАВЛЕНИЕ =====
         function openAddModal() {
             document.getElementById('addDocModal').style.display = 'flex';
             document.getElementById('addDocForm').reset();
         }
-
         function closeAddModal() {
             document.getElementById('addDocModal').style.display = 'none';
         }
@@ -387,12 +380,10 @@
             const number = document.getElementById('docNumber').value.trim();
             const title = document.getElementById('docTitle').value.trim();
             const text = document.getElementById('docText').value.trim();
-
             if (!title || !text) {
                 alert('Заголовок и текст обязательны');
                 return;
             }
-
             const doc = {
                 id: generateDocId(),
                 category: category,
@@ -407,7 +398,7 @@
             renderDocuments();
         });
 
-        // ===== УДАЛЕНИЕ ДОКУМЕНТА =====
+        // ===== УДАЛЕНИЕ =====
         function deleteDoc(docId) {
             if (confirm('Удалить документ?')) {
                 deleteDocument(docId);
@@ -415,7 +406,7 @@
             }
         }
 
-        // ===== ОБРАБОТКА КЛИКОВ ПО КАТЕГОРИЯМ =====
+        // ===== КАТЕГОРИИ =====
         document.getElementById('categoryFilter').addEventListener('click', function(e) {
             const btn = e.target.closest('.btn');
             if (!btn) return;
@@ -425,7 +416,7 @@
             renderDocuments();
         });
 
-        // ===== ЗАКРЫТИЕ МОДАЛОК ПО КЛИКУ ВНЕ =====
+        // ===== ЗАКРЫТИЕ МОДАЛОК =====
         document.getElementById('docViewModal').addEventListener('click', function(e) {
             if (e.target === this) closeDocView();
         });
@@ -433,14 +424,12 @@
             if (e.target === this) closeAddModal();
         });
 
-        // ===== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ =====
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // ===== ЗАГРУЗКА =====
         window.onload = function() {
             renderDocuments();
         };
