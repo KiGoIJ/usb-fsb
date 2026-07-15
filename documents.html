@@ -10,31 +10,66 @@
     <title>База данных</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* ===== Управление ===== */
         .doc-controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 24px;
+            flex-wrap: nowrap;
             align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 4px; /* для скролла */
+        }
+        .doc-controls .filter-group {
+            flex: 0 0 auto;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            gap: 4px;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            overflow-x: auto;
+        }
+        .doc-controls .filter-group .filter-btn {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            white-space: nowrap;
         }
         .doc-search {
-            flex: 1;
-            min-width: 200px;
+            flex: 1 1 200px;
+            min-width: 140px;
         }
         .doc-search input {
             margin: 0;
             background: rgba(255,255,255,0.06);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 10px 18px;
+            padding: 6px 16px;
             color: var(--text-primary);
             width: 100%;
+            height: 36px;
+            font-size: 0.9rem;
         }
         .doc-search input:focus {
             border-color: var(--accent);
             outline: none;
             box-shadow: 0 0 0 3px rgba(84, 131, 131, 0.2);
         }
+        .btn-add-doc {
+            flex: 0 0 auto;
+            margin-left: auto;
+            height: 36px;
+            padding: 0 20px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+        }
+
+        /* ===== Карточки документов ===== */
         .doc-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -123,6 +158,8 @@
             background: rgba(255, 77, 77, 0.15);
             color: #ff4d4d;
         }
+
+        /* ===== Модальные окна ===== */
         .doc-modal .modal-content {
             max-width: 600px;
         }
@@ -142,9 +179,8 @@
             background: var(--accent);
             border-radius: 10px;
         }
-        .btn-add-doc {
-            margin-left: auto;
-        }
+
+        /* ===== Добавление ===== */
         .add-doc-form label {
             margin-top: 10px;
         }
@@ -153,17 +189,8 @@
         .add-doc-form textarea {
             margin-top: 4px;
         }
-        .empty-docs {
-            color: var(--text-secondary);
-            text-align: center;
-            padding: 60px 0;
-            font-style: italic;
-        }
-        .doc-card {
-            animation: fadeInUp 0.4s ease forwards;
-        }
 
-        /* ===== КРАСИВЫЕ КНОПКИ-КАТЕГОРИИ В МОДАЛКЕ ===== */
+        /* ===== Категории в модалке ===== */
         #categorySelector {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -217,6 +244,34 @@
             color: #fff;
         }
 
+        /* ===== Пусто ===== */
+        .empty-docs {
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 60px 0;
+            font-style: italic;
+        }
+        .doc-card {
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        /* ===== Адаптив ===== */
+        @media (max-width: 1024px) {
+            .doc-controls {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .doc-controls .filter-group {
+                flex: 0 0 100%;
+                overflow-x: auto;
+            }
+            .doc-search {
+                flex: 1 1 200px;
+            }
+            .btn-add-doc {
+                margin-left: 0;
+            }
+        }
         @media (max-width: 600px) {
             #categorySelector {
                 grid-template-columns: repeat(2, 1fr);
@@ -259,7 +314,7 @@
         <p style="color:var(--text-secondary); margin-bottom:20px;">Документооборот и нормативная база</p>
 
         <div class="doc-controls">
-            <!-- Фильтры категорий (основные) -->
+            <!-- Фильтры -->
             <div class="filter-group" id="categoryFilter">
                 <button class="filter-btn active" data-cat="all">Все</button>
                 <button class="filter-btn" data-cat="Приказы">Приказы</button>
@@ -269,15 +324,17 @@
                 <button class="filter-btn" data-cat="Протоколы">Протоколы</button>
                 <button class="filter-btn" data-cat="Прочее">Прочее</button>
             </div>
+            <!-- Поиск -->
             <div class="doc-search">
                 <input type="text" id="searchInput" placeholder="Поиск по документам — номер, заголовок, текст..." oninput="renderDocuments()">
             </div>
+            <!-- Кнопка добавления -->
             <button class="btn btn-add-doc" id="addDocBtn" style="display:none;" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Добавить</button>
         </div>
 
         <div id="docGrid" class="doc-grid"></div>
 
-        <!-- Модальное окно просмотра -->
+        <!-- Модалка просмотра -->
         <div id="docViewModal" class="modal doc-modal" style="display:none;">
             <div class="modal-content">
                 <h2 id="viewDocTitle"></h2>
@@ -293,7 +350,7 @@
             </div>
         </div>
 
-        <!-- Модальное окно добавления с красивыми категориями -->
+        <!-- Модалка добавления с красивыми категориями -->
         <div id="addDocModal" class="modal" style="display:none;">
             <div class="modal-content add-doc-form">
                 <h2>📄 Добавить документ</h2>
